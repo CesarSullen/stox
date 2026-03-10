@@ -244,7 +244,7 @@ img {
 }
 
 .nav-item span {
-	font-size: 0.9rem;
+	font-size: 0.8rem;
 	font-weight: 400;
 }
 
@@ -254,8 +254,8 @@ img {
 
 .nav-item.active img {
 	opacity: 1;
-	filter: invert(72%) sepia(58%) saturate(432%) hue-rotate(92deg)
-		brightness(96%) contrast(92%);
+	filter: invert(67%) sepia(51%) saturate(541%) hue-rotate(98deg)
+		brightness(98%) contrast(93%);
 }
 
 /* Modals */
@@ -270,6 +270,10 @@ img {
 	height: 100%;
 	background-color: hsla(0, 0%, 0%, 0.8);
 	backdrop-filter: blur(8px);
+}
+.modal.active {
+	opacity: 1;
+	pointer-events: all;
 }
 
 .close-btn {
@@ -306,7 +310,7 @@ img {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	margin-bottom: 2rem;
+	margin-bottom: 1rem;
 }
 
 .form-group {
@@ -385,6 +389,74 @@ input[list]::-webkit-calendar-picker-indicator {
 .btn-delete:hover {
 	background: var(--alert);
 	color: white;
+}
+
+.premium-info {
+	font-size: 1.15rem;
+	font-weight: 600;
+	margin-bottom: 1rem;
+}
+
+.premium-features {
+	display: inline-block;
+	list-style: none;
+	margin-bottom: 0.5rem;
+}
+
+.premium-features li {
+	display: flex;
+	align-items: center;
+	font-size: 1.1rem;
+	margin-bottom: 0.6rem;
+}
+
+.premium-features li::before {
+	content: "";
+	display: inline-block;
+	width: 25px;
+	height: 25px;
+	margin-right: 12px;
+	background-image: url("../assets/icons/check-circle-fill.svg");
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.pricing-container {
+	padding: 1rem;
+	background: #1e1e1e;
+	border-radius: 12px;
+	margin-bottom: 0.5rem;
+}
+
+.pricing-options {
+	display: flex;
+	justify-content: space-between;
+	gap: 10px;
+}
+
+.price-item {
+	font-size: 0.8rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.price-item strong {
+	color: var(--accent);
+	font-size: 1rem;
+	margin-top: 2px;
+}
+
+.contact-link {
+	display: block;
+	margin-top: 1rem;
+	color: var(--accent);
+	text-decoration: none;
+	text-align: center;
+}
+
+.contact-link:hover {
+	text-decoration: underline;
 }
 
 /* Views */
@@ -532,8 +604,9 @@ input[list]::-webkit-calendar-picker-indicator {
 }
 
 .stock-badge {
-	font-size: 0.75rem;
+	font-size: 1.2rem;
 	font-weight: 500;
+	margin-top: 1rem;
 }
 
 .stock-badge.ok {
@@ -815,6 +888,10 @@ input[list]::-webkit-calendar-picker-indicator {
 	gap: 0.5rem;
 	cursor: pointer;
 	font-size: 1rem;
+}
+
+.primary-btn img {
+	width: 28px;
 }
 
 .settings-card:last-child {

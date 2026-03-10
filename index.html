@@ -248,9 +248,9 @@
 							onchange="updateThreshold(this.value)"
 						/>
 						<p class="setting-help">
-							Los productos con esta cantidad o menos se marcarán como: <br />
-							<span class="stock-badge low">● Bajo inventario</span>.
+							Los productos con esta cantidad o menos se marcarán como:
 						</p>
+						<p class="stock-badge low">● Bajo inventario</p>
 					</div>
 				</div>
 
@@ -473,6 +473,64 @@
 				</form>
 			</div>
 		</div>
+
+		<div id="modal-premium" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2>Acceso Premium</h2>
+					<button class="close-btn" onclick="closeModal('modal-premium')">
+						<img src="./assets/icons/x-circle.svg" />
+					</button>
+				</div>
+
+				<p class="premium-info">Desbloquea funciones exclusivas:</p>
+
+				<ul class="premium-features">
+					<li>Inventario ilimitado</li>
+					<li>Acceso al historial</li>
+					<li>Estadísticas detalladas</li>
+					<li>App para dependiente</li>
+				</ul>
+
+				<div class="pricing-container">
+					<div class="pricing-options">
+						<div class="price-item">
+							<span>Saldo:</span> <strong>200 CUP</strong>
+						</div>
+						<div class="price-item">
+							<span>Efectivo:</span> <strong>300 CUP</strong>
+						</div>
+						<div class="price-item">
+							<span>Transf.:</span> <strong>400 CUP</strong>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label>Introduce tu código</label>
+					<input
+						type="text"
+						id="premium-code"
+						class="form-input"
+						placeholder="XXXX-XXXX"
+					/>
+				</div>
+
+				<button class="btn-confirm" onclick="validatePremiumCode()">
+					Activar Premium
+				</button>
+
+				<a
+					href="https://wa.me/5351643954?text=Hola, quiero obtener un código Premium para STOX"
+					target="_blank"
+					class="contact-link"
+				>
+					¿No tienes código? Click aquí.
+				</a>
+			</div>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+		<script src="./js/supabase-config.js"></script>
 		<script src="./js/main.js"></script>
 	</body>
 </html>

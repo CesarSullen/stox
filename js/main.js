@@ -16,6 +16,14 @@ let db = {
 
 // Switch between tabs
 function switchView(viewId, btnElement) {
+	const restrictedViews = ["view-history", "view-dashboard"];
+	const isPremium = checkPremiumStatus();
+
+	if (restrictedViews.includes(viewId) && !isPremium) {
+		document.getElementById("modal-premium").classList.add("active");
+		return;
+	}
+
 	document
 		.querySelectorAll(".view")
 		.forEach((v) => v.classList.remove("active"));
@@ -353,8 +361,7 @@ function renderTopList(sales, containerId, keyType) {
 
 // Modals
 function closeModal(modalId) {
-	document.getElementById(modalId).style.opacity = "0";
-	document.getElementById(modalId).style.pointerEvents = "none";
+	document.getElementById(modalId).classList.remove("active");
 }
 
 function openSaleModal() {
@@ -370,8 +377,7 @@ function openSaleModal() {
 		select.appendChild(option);
 	});
 
-	document.getElementById("modal-sale").style.opacity = "1";
-	document.getElementById("modal-sale").style.pointerEvents = "auto";
+	document.getElementById("modal-sale").classList.add("active");
 }
 
 function handleSaleSubmit(event) {
@@ -416,8 +422,7 @@ function openSupplyModal() {
 
 	populateCategorySelect("supply-product-category");
 
-	document.getElementById("modal-supply").style.opacity = "1";
-	document.getElementById("modal-supply").style.pointerEvents = "auto";
+	document.getElementById("modal-supply").classList.add("active");
 }
 
 function handleSupplySubmit(event) {
@@ -471,8 +476,7 @@ function openEditModal(productId) {
 	document.getElementById("edit-product-price").value = product.price;
 	document.getElementById("edit-product-stock").value = product.stock;
 
-	document.getElementById("modal-edit").style.opacity = "1";
-	document.getElementById("modal-edit").style.pointerEvents = "auto";
+	document.getElementById("modal-edit").classList.add("active");
 }
 
 function handleEditSubmit(event) {
@@ -666,6 +670,61 @@ function clearDatabase() {
 
 loadFromStorage();
 renderDashboard();
+
+// Premium Locking
+function checkPremiumStatus() {
+	const premiumData = JSON.parse(localStorage.getItem("stox_premium"));
+	if (!premiumData) return false;
+
+	const today = new Date().getTime();
+	if (today >= premiumData.expiryDate) {
+		localStorage.removeItem("stox_premium");
+		return false;
+	}
+	return true;
+}
+
+async function validatePremiumCode() {
+	const inputCode = document.getElementById("premium-code").value.trim();
+	if (!inputCode) return alert("Por favor, introduce un código.");
+
+	try {
+		const { data, error } = await _supabase
+			.from("premium_codes")
+			.select("id")
+			.eq("code", inputCode)
+			.eq("is_used", false)
+			.single();
+
+		if (error || !data) {
+			throw new Error("Código no encontrado o ya ha sido utilizado.");
+		}
+
+		const { error: updateError } = await _supabase
+			.from("premium_codes")
+			.update({ is_used: true })
+			.eq("id", data.id);
+
+		if (updateError)
+			throw new Error("Error al procesar el código. Inténtalo de nuevo.");
+
+		activatePremium(30);
+
+		closeModal("modal-premium");
+		alert("¡Felicidades! Acceso Premium activado por 30 días.");
+		location.reload();
+	} catch (err) {
+		console.error("Error Premium:", err);
+		alert(err.message || "Error al conectar con el servidor.");
+	}
+}
+
+function activatePremium(days = 30) {
+	const expiryDate = new Date().getTime() + days * 24 * 60 * 60 * 1000;
+	const premiumData = { expiryDate: expiryDate };
+
+	localStorage.setItem("stox_premium", JSON.stringify(premiumData));
+}
 
 if ("serviceWorker" in navigator) {
 	window.addEventListener("load", () => {

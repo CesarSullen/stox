@@ -1,5 +1,5 @@
 {
-	"name": "STOX Inventory Manager",
+	"name": "STOX Manager",
 	"short_name": "STOX",
 	"description": "Gestión de inventario, ventas y suministros.",
 	"start_url": "./index.html",
@@ -10,7 +10,7 @@
 	"icons": [
 		{
 			"src": "./assets/opengraph/logo.png",
-			"sizes": "1024x1024",
+			"sizes": "512x512",
 			"type": "image/png",
 			"purpose": "any"
 		}

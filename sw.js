@@ -9,12 +9,14 @@ const STATIC_ASSETS = [
 
 	// App Icons
 	"./assets/opengraph/logo.png",
+	"./assets/opengraph/so-white-logo-60.svg",
 
 	// UI Icons
 	"./assets/icons/arrow-circle-down.svg",
 	"./assets/icons/arrow-circle-up.svg",
 	"./assets/icons/chart-bar.svg",
 	"./assets/icons/chart-line-up-duotone.svg",
+	"./assets/icons/check-circle-fill.svg",
 	"./assets/icons/file-arrow-down.svg",
 	"./assets/icons/file-arrow-up.svg",
 	"./assets/icons/gear-six.svg",
