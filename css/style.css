@@ -604,7 +604,7 @@ input[list]::-webkit-calendar-picker-indicator {
 }
 
 .stock-badge {
-	font-size: 1.2rem;
+	font-size: 0.9rem;
 	font-weight: 500;
 	margin-top: 1rem;
 }

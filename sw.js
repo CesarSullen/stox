@@ -1,10 +1,11 @@
-const CACHE_NAME = "stox-v1.1";
+const CACHE_NAME = "stox-v1.1.1";
 const STATIC_ASSETS = [
 	// Page
 	"./",
 	"./index.html",
 	"./css/style.css",
 	"./js/main.js",
+	"./js/supabase-config.js",
 	"./manifest.json",
 
 	// App Icons
@@ -41,35 +42,30 @@ const STATIC_ASSETS = [
 // Install
 self.addEventListener("install", (event) => {
 	event.waitUntil(
-		(async () => {
-			const cache = await caches.open(CACHE_NAME);
-			await cache.addAll(STATIC_ASSETS);
-		})(),
+		caches.open(CACHE_NAME).then((cache) => {
+			return cache.addAll(STATIC_ASSETS);
+		}),
 	);
 });
 
 // Activate
 self.addEventListener("activate", (event) => {
 	event.waitUntil(
-		(async () => {
-			const keys = await caches.keys();
-			await Promise.all(
+		caches.keys().then((keys) => {
+			return Promise.all(
 				keys
 					.filter((key) => key !== CACHE_NAME)
 					.map((key) => caches.delete(key)),
 			);
-			await self.clients.claim();
-		})(),
+		}),
 	);
 });
 
 // Fetch (cache-first)
 self.addEventListener("fetch", (event) => {
 	event.respondWith(
-		(async () => {
-			const cachedResponse = await caches.match(event.request);
-			if (cachedResponse) return cachedResponse;
-			return fetch(event.request);
-		})(),
+		caches.match(event.request).then((response) => {
+			return response || fetch(event.request);
+		}),
 	);
 });

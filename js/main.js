@@ -368,7 +368,7 @@ function openSaleModal() {
 	const select = document.getElementById("sale-product-select");
 
 	select.innerHTML =
-		'<option value="" disabled selected>Select a product</option>';
+		'<option value="" disabled selected>Selecciona un producto</option>';
 
 	db.products.forEach((product) => {
 		const option = document.createElement("option");
@@ -432,6 +432,14 @@ function handleSupplySubmit(event) {
 	const quantity = parseInt(document.getElementById("supply-quantity").value);
 	const cost = parseFloat(document.getElementById("supply-cost").value);
 
+	if (!checkPremiumStatus() && db.products.length >= 10) {
+		alert(
+			"Versión gratuita limitada a 10 productos.\nActiva Premium para desbloquear capacidad ilimitada.",
+		);
+		document.getElementById("modal-premium").classList.add("active");
+		return;
+	}
+
 	let product = db.products.find(
 		(p) => p.name.toLowerCase() === name.toLowerCase(),
 	);
@@ -461,8 +469,11 @@ function handleSupplySubmit(event) {
 
 	saveToStorage();
 	renderDashboard();
+	renderInventory();
 	closeModal("modal-supply");
-	alert("Compra registrada con éxito");
+	alert(
+		"Compra registrada con éxito. \nAsegúrese de añadirle un precio de venta en el inventario.",
+	);
 }
 
 function openEditModal(productId) {
@@ -712,7 +723,7 @@ async function validatePremiumCode() {
 
 		closeModal("modal-premium");
 		alert("¡Felicidades! Acceso Premium activado por 30 días.");
-		location.reload();
+		// location.reload();
 	} catch (err) {
 		console.error("Error Premium:", err);
 		alert(err.message || "Error al conectar con el servidor.");
