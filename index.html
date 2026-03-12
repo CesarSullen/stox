@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+		/>
+
+		<meta property="og:title" content="Stox" />
+		<meta property="og:description" content="Control total de inventario" />
+		<meta property="og:type" content="website" />
+		<meta property="og:image" content="./assets/opengraph/opengraph.png" />
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="STOX" />
+		<meta name="theme-color" content="#0d0d0d" />
+		<meta
+			name="apple-mobile-web-app-status-bar-style"
+			content="black-translucent"
+		/>
+		<link rel="icon" type="image/png" href="./assets/opengraph/logo.png" />
+		<link rel="apple-touch-icon" href="./assets/opengraph/logo.png" />
+
+		<link rel="stylesheet" href="./css/style.css" />
+		<link rel="manifest" href="./manifest.json" />
+		<title>STOX</title>
+	</head>
+	<body>
+		<header class="main-header">
+			<h1 class="app-name">STOX</h1>
+			<div class="header-actions">
+				<button class="action-btn" onclick="switchView('view-settings', this)">
+					<img src="./assets/icons/gear-six.svg" />
+				</button>
+			</div>
+		</header>
+
+		<main id="app-container" class="app-container">
+			<section id="view-home" class="view active">
+				<div class="quick-actions">
+					<div class="action-card" onclick="openSaleModal()">
+						<div class="action-card-icon">
+							<img src="./assets/icons/handbag-simple.svg" />
+						</div>
+						<h3>Registrar Venta</h3>
+					</div>
+
+					<div class="action-card" onclick="openSupplyModal()">
+						<div class="action-card-icon">
+							<img src="./assets/icons/plus-circle.svg" />
+						</div>
+						<h3>Registrar Compra</h3>
+					</div>
+				</div>
+
+				<div class="home-stats">
+					<div class="stat-card">
+						<div class="stat-header">
+							<img
+								src="./assets/icons/chart-line-up-duotone.svg"
+								class="stat-icon"
+							/>
+							<span class="stat-label">Ingresos<br />Hoy</span>
+						</div>
+						<h3 id="home-stat-income" class="stat-value">$0.00</h3>
+					</div>
+					<div class="stat-card">
+						<div class="stat-header">
+							<img src="./assets/icons/tag-duotone.svg" class="stat-icon" />
+							<span class="stat-label">Ventas<br />Hoy</span>
+						</div>
+						<h3 id="home-stat-sales" class="stat-value">0</h3>
+					</div>
+					<div class="stat-card">
+						<div class="stat-header">
+							<img
+								src="./assets/icons/money-wavy-duotone.svg"
+								class="stat-icon"
+							/>
+							<span class="stat-label">Beneficio<br />Hoy</span>
+						</div>
+						<h3 id="home-stat-profit" class="stat-value">$0.00</h3>
+					</div>
+					<div class="stat-card">
+						<div class="stat-header">
+							<img src="./assets/icons/package-duotone.svg" class="stat-icon" />
+							<span class="stat-label">Stock<br />Actual</span>
+						</div>
+						<h3 id="home-stat-inventory-value" class="stat-value">$0.00</h3>
+					</div>
+				</div>
+			</section>
+
+			<section id="view-inventory" class="view">
+				<div class="view-header">
+					<h2>Inventario</h2>
+					<button class="add-item-btn" onclick="openSupplyModal()">
+						<img src="./assets/icons/plus-circle.svg" />
+					</button>
+				</div>
+				<div class="search-box">
+					<img src="./assets/icons/magnifying-glass.svg" />
+					<input
+						type="text"
+						placeholder="Buscar producto..."
+						id="inventory-search"
+						oninput="handleSearch(event)"
+					/>
+				</div>
+				<div id="category-filters" class="category-pills-container"></div>
+				<div id="inventory-list" class="inventory-list"></div>
+			</section>
+
+			<section id="view-history" class="view">
+				<div class="view-header">
+					<h2>Historial</h2>
+					<div class="filter-wrapper">
+						<div
+							id="filter-pill"
+							class="filter-pill"
+							onclick="toggleFilterMenu()"
+						>
+							Todo
+						</div>
+						<div id="filter-menu" class="filter-menu">
+							<div class="filter-option" onclick="applyFilter('all')">Todo</div>
+							<div class="filter-option" onclick="applyFilter('purchase')">
+								Compras
+							</div>
+							<div class="filter-option" onclick="applyFilter('sale')">
+								Ventas
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="unified-timeline" class="unified-timeline"></div>
+			</section>
+
+			<section id="view-dashboard" class="view">
+				<div class="view-header">
+					<h2>Estadísticas</h2>
+				</div>
+
+				<div class="stats-filters">
+					<div class="segmented-control">
+						<div class="segment active" onclick="renderStats('today', this)">
+							Hoy
+						</div>
+						<div class="segment" onclick="renderStats('week', this)">
+							Semana
+						</div>
+						<div class="segment" onclick="renderStats('month', this)">Mes</div>
+						<div class="segment" onclick="renderStats('all', this)">Todo</div>
+					</div>
+				</div>
+
+				<div id="stats-content">
+					<div class="stats-grid">
+						<div class="stat-card">
+							<div class="stat-header">
+								<img
+									src="./assets/icons/chart-line-up-duotone.svg"
+									class="stat-icon"
+								/>
+								<span class="stat-label">Ingresos Brutos</span>
+							</div>
+							<h3 id="stat-income" class="stat-value">$0.00</h3>
+						</div>
+						<div class="stat-card">
+							<div class="stat-header">
+								<img src="./assets/icons/tag-duotone.svg" class="stat-icon" />
+								<span class="stat-label">Ventas <br />Totales</span>
+							</div>
+							<h3 id="stat-sales-count" class="stat-value">0</h3>
+						</div>
+
+						<div class="stat-card highlight">
+							<div class="stat-header">
+								<img
+									src="./assets/icons/money-wavy-duotone.svg"
+									class="stat-icon"
+								/>
+								<span class="stat-label">Beneficio<br />Neto</span>
+							</div>
+							<h3 id="stat-profit" class="stat-value">$0.00</h3>
+						</div>
+
+						<div class="stat-card">
+							<div class="stat-header">
+								<img
+									src="./assets/icons/shopping-cart-simple-duotone.svg"
+									class="stat-icon"
+								/>
+								<span class="stat-label">Compras <br />Totales</span>
+							</div>
+							<h3 id="stat-investment" class="stat-value">$0.00</h3>
+						</div>
+						<div class="stat-card">
+							<div class="stat-header">
+								<img
+									src="./assets/icons/package-duotone.svg"
+									class="stat-icon"
+								/>
+								<span class="stat-label">Stock<br />Actual</span>
+							</div>
+							<h3 id="stat-inventory-value" class="stat-value">$0.00</h3>
+						</div>
+					</div>
+
+					<div class="top-lists-container">
+						<div class="stat-card">
+							<div class="card-header-actions">
+								<h3>Top 5: Más Vendidos</h3>
+							</div>
+							<div id="top-products-quantity" class="top-list-content"></div>
+						</div>
+
+						<div class="stat-card">
+							<div class="card-header-actions">
+								<h3>Top 5: Mayores Ingresos</h3>
+							</div>
+							<div id="top-products-income" class="top-list-content"></div>
+						</div>
+
+						<div class="stat-card">
+							<div class="card-header-actions">
+								<h3>Top 5: Más Rentables</h3>
+							</div>
+							<div id="top-products-profit" class="top-list-content"></div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section id="view-settings" class="view">
+				<div class="view-header">
+					<h2>Ajustes</h2>
+				</div>
+
+				<div class="settings-card">
+					<h3>Inventario</h3>
+					<div class="form-group">
+						<label>Umbral de Stock Crítico</label>
+						<input
+							type="number"
+							id="setting-stock-threshold"
+							class="form-input"
+							value="5"
+							onchange="updateThreshold(this.value)"
+						/>
+						<p class="setting-help">
+							Los productos con esta cantidad o menos se marcarán como:
+						</p>
+						<p class="stock-badge low">● Bajo inventario</p>
+					</div>
+				</div>
+
+				<div class="settings-card">
+					<div class="card-header-actions">
+						<h3>Categorías</h3>
+						<button class="add-category-btn" onclick="addCategory()">
+							<img src="./assets/icons/plus-circle.svg" />
+						</button>
+					</div>
+					<div id="categories-list" class="chip-container"></div>
+				</div>
+
+				<div class="settings-card">
+					<h3>Datos</h3>
+					<div class="settings-actions-grid">
+						<button
+							class="primary-btn"
+							onclick="document.getElementById('input-import').click()"
+						>
+							<img src="./assets/icons/file-arrow-down.svg" /> Importar
+						</button>
+						<input
+							type="file"
+							id="input-import"
+							hidden
+							accept=".json"
+							onchange="handleImport(this.files[0])"
+						/>
+
+						<button class="primary-btn" onclick="exportData()">
+							<img src="./assets/icons/file-arrow-up.svg" /> Exportar
+						</button>
+					</div>
+					<button class="btn-delete" onclick="clearDatabase()">
+						Borrar todos los datos
+					</button>
+				</div>
+
+				<div class="settings-card">
+					<a href="http://synthocean.com" target="_blank">
+						<img
+							src="./assets/opengraph/so-logo-white-2.webp"
+							class="company-logo"
+						/>
+					</a>
+					<span class="version-badge">STOX v1.2</span>
+					<div class="legal-links">
+						<a
+							href="https://wa.me/5351643954?text=Hola. Me gustaría informar de un problema en STOX."
+							target="_blank"
+							>Informar de un problema</a
+						>
+						<a
+							href="https://wa.me/5351643954?text=Hola. Me gustaría obtener información sobre cómo obtener una web para mi negocio."
+							target="_blank"
+							>Crea la web de tu negocio</a
+						>
+						<p class="copyright">© 2026 STOX</p>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<nav class="bottom-nav">
+			<button class="nav-item active" onclick="switchView('view-home', this)">
+				<img src="./assets/icons/house.svg" alt="" />
+				<span>Inicio</span>
+			</button>
+			<button class="nav-item" onclick="switchView('view-inventory', this)">
+				<img src="./assets/icons/package.svg" alt="" />
+				<span>Inventario</span>
+			</button>
+			<button class="nav-item" onclick="switchView('view-history', this)">
+				<img src="./assets/icons/receipt.svg" alt="" />
+				<span>Historial</span>
+			</button>
+			<button class="nav-item" onclick="switchView('view-dashboard', this)">
+				<img src="./assets/icons/chart-pie-slice.svg" alt="" />
+				<span>Panel</span>
+			</button>
+		</nav>
+
+		<div id="modal-sale" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2>Registrar Venta</h2>
+					<button class="close-btn" onclick="closeModal('modal-sale')">
+						<img src="./assets/icons/x-circle.svg" />
+					</button>
+				</div>
+				<form id="form-sale" onsubmit="handleSaleSubmit(event)">
+					<div class="form-group">
+						<label>Producto</label>
+						<select
+							id="sale-product-select"
+							class="form-input"
+							required
+						></select>
+					</div>
+					<div class="form-group">
+						<label>Cantidad</label>
+						<input
+							type="number"
+							id="sale-quantity"
+							class="form-input"
+							min="1"
+							value="1"
+							required
+						/>
+					</div>
+					<div class="form-group">
+						<label>Precio de Venta (cada unidad)</label>
+						<input
+							type="number"
+							id="sale-price"
+							class="form-input"
+							step="0.01"
+							placeholder="0.00"
+							required
+						/>
+					</div>
+					<div class="modal-actions">
+						<button type="submit" class="btn-confirm">Confirmar Venta</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div id="modal-supply" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2>Registrar Compra</h2>
+					<button class="close-btn" onclick="closeModal('modal-supply')">
+						<img src="./assets/icons/x-circle.svg" />
+					</button>
+				</div>
+				<form id="form-supply" onsubmit="handleSupplySubmit(event)">
+					<div class="form-group">
+						<label>Nombre del Producto</label>
+						<input
+							type="text"
+							id="supply-product-input"
+							class="form-input"
+							list="product-list"
+							placeholder="Escribe el nombre del producto..."
+							required
+						/>
+						<datalist id="product-list"> </datalist>
+					</div>
+					<div class="form-group">
+						<label>Categoría</label>
+						<select id="supply-category" class="form-input"></select>
+					</div>
+					<div class="form-group">
+						<label>Cantidad a Comprar</label>
+						<input
+							type="number"
+							id="supply-quantity"
+							class="form-input"
+							min="1"
+							value="1"
+							required
+						/>
+					</div>
+					<div class="form-group">
+						<label>Precio de Compra (cada unidad)</label>
+						<input
+							type="number"
+							id="supply-cost"
+							class="form-input"
+							min="0"
+							placeholder="0.00"
+							required
+						/>
+					</div>
+					<div class="modal-actions">
+						<button type="submit" class="btn-confirm">Confirmar Compra</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div id="modal-edit" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2>Editar Producto</h2>
+					<button class="close-btn" onclick="closeModal('modal-edit')">
+						<img src="./assets/icons/x-circle.svg" />
+					</button>
+				</div>
+				<form id="form-edit-product" onsubmit="handleEditSubmit(event)">
+					<input type="hidden" id="edit-product-id" />
+
+					<div class="form-group">
+						<label>Nombre del Producto</label>
+						<input
+							type="text"
+							id="edit-product-name"
+							class="form-input"
+							required
+						/>
+					</div>
+					<div class="form-group">
+						<label>Categoría</label>
+						<select id="edit-product-category" class="form-input"></select>
+					</div>
+					<div class="form-group">
+						<label>Precio de Venta (cada unidad)</label>
+						<input
+							type="number"
+							id="edit-product-price"
+							class="form-input"
+							step="0.01"
+							min="0"
+							required
+						/>
+					</div>
+					<div class="form-group">
+						<label>Cantidad Actual</label>
+						<input
+							type="number"
+							id="edit-product-stock"
+							class="form-input"
+							min="0"
+							required
+						/>
+					</div>
+
+					<div class="modal-actions">
+						<button type="submit" class="btn-confirm">Guardar</button>
+						<button
+							type="button"
+							class="btn-delete"
+							onclick="handleDeleteProduct()"
+						>
+							Eliminar
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div id="modal-premium" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2>Acceso Premium</h2>
+					<button class="close-btn" onclick="closeModal('modal-premium')">
+						<img src="./assets/icons/x-circle.svg" />
+					</button>
+				</div>
+
+				<ul class="premium-features">
+					<li>Inventario ilimitado</li>
+					<li>Acceso al historial</li>
+					<li>Estadísticas detalladas</li>
+					<li>Exportación de datos</li>
+					<li>App para dependiente</li>
+				</ul>
+
+				<div class="pricing-container">
+					<div class="pricing-options">
+						<div class="price-item">
+							<span>Saldo:</span> <strong>250 CUP</strong>
+						</div>
+						<div class="price-item">
+							<span>Efectivo:</span> <strong>400 CUP</strong>
+						</div>
+						<div class="price-item">
+							<span>Transf.:</span> <strong>500 CUP</strong>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label>Introduce tu código</label>
+					<input
+						type="text"
+						id="premium-code"
+						class="form-input"
+						placeholder="XXXX-XXXX-XXXX-XXXX"
+					/>
+				</div>
+
+				<button class="btn-confirm" onclick="validatePremiumCode()">
+					Activar Premium
+				</button>
+
+				<a
+					href="https://wa.me/5351643954?text=Hola, quiero obtener un código Premium para STOX."
+					target="_blank"
+					class="contact-link"
+				>
+					¿No tienes código? Click aquí.
+				</a>
+			</div>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+		<script src="./js/supabase-config.js"></script>
+		<script src="./js/main.js"></script>
+	</body>
+</html>

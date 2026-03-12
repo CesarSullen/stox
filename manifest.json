@@ -1,0 +1,48 @@
+{
+	"name": "STOX Manager",
+	"short_name": "STOX",
+	"description": "Gestión de inventario, ventas y suministros.",
+	"start_url": "./index.html",
+	"display": "standalone",
+	"scope": "./",
+	"background_color": "#0d0d0d",
+	"theme_color": "#0d0d0d",
+	"icons": [
+		{
+			"src": "./assets/opengraph/logo.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "any"
+		}
+	],
+	"screenshots": [
+		{
+			"src": "./assets/screenshots/mobile-home.png",
+			"sizes": "1810x2146",
+			"type": "image/png",
+			"form_factor": "narrow",
+			"label": "Vista principal"
+		},
+		{
+			"src": "./assets/screenshots/mobile-inventory.png",
+			"sizes": "1810x2146",
+			"type": "image/png",
+			"form_factor": "narrow",
+			"label": "Dashboard de inventario"
+		},
+		{
+			"src": "./assets/screenshots/mobile-history.png",
+			"sizes": "1810x2146",
+			"type": "image/png",
+			"form_factor": "narrow",
+			"label": "Vista de historial"
+		},
+		{
+			"src": "./assets/screenshots/mobile-dashboard.png",
+			"sizes": "1810x2146",
+			"type": "image/png",
+			"form_factor": "narrow",
+			"label": "Dashboard de Estadísticas"
+		}
+	]
+}
