@@ -1,4 +1,4 @@
-const CACHE_NAME = "stox-v1.1.1";
+const CACHE_NAME = "stox-v1.2.0";
 const STATIC_ASSETS = [
 	// Page
 	"./",
@@ -10,13 +10,13 @@ const STATIC_ASSETS = [
 
 	// App Icons
 	"./assets/opengraph/logo.png",
-	"./assets/opengraph/so-white-logo-60.svg",
+	"./assets/opengraph/so-logo-white-2.webp",
 
 	// UI Icons
 	"./assets/icons/arrow-circle-down.svg",
 	"./assets/icons/arrow-circle-up.svg",
-	"./assets/icons/chart-bar.svg",
 	"./assets/icons/chart-line-up-duotone.svg",
+	"./assets/icons/chart-pie-slice.svg",
 	"./assets/icons/check-circle-fill.svg",
 	"./assets/icons/file-arrow-down.svg",
 	"./assets/icons/file-arrow-up.svg",

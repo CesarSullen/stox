@@ -361,7 +361,21 @@ function renderTopList(sales, containerId, keyType) {
 
 // Modals
 function closeModal(modalId) {
-	document.getElementById(modalId).classList.remove("active");
+	const modal = document.getElementById(modalId);
+	if (modal) {
+		modal.classList.remove("active");
+
+		const form = modal.querySelector("form");
+		if (form) {
+			form.reset();
+
+			const categorySelect = form.querySelector("#supply-category");
+			if (categorySelect) {
+				categorySelect.disabled = false;
+				categorySelect.style.opacity = 1;
+			}
+		}
+	}
 }
 
 function openSaleModal() {
@@ -385,18 +399,20 @@ function handleSaleSubmit(event) {
 
 	const productId = document.getElementById("sale-product-select").value.trim();
 	const quantity = parseInt(document.getElementById("sale-quantity").value);
+	const priceAtSale = parseFloat(document.getElementById("sale-price").value);
 	const product = db.products.find((p) => p.id === productId);
 
 	if (product && product.stock >= quantity) {
 		product.stock -= quantity;
+		product.price = priceAtSale;
 
 		db.sales.push({
 			id: `sale-${Date.now()}`,
 			product_id: product.id,
 			product_name: product.name,
 			quantity: quantity,
-			price_at_sale: product.price,
-			total: product.price * quantity,
+			price_at_sale: priceAtSale,
+			total: priceAtSale * quantity,
 			date: new Date().toISOString(),
 			type: "sale",
 		});
@@ -404,11 +420,25 @@ function handleSaleSubmit(event) {
 		saveToStorage();
 		renderDashboard();
 		closeModal("modal-sale");
-		alert("Venta registrada con éxito");
+		alert(
+			"Venta registrada con éxito.\nEl precio del producto ha sido actualizado.",
+		);
 	} else {
-		alert("Cantidad insuficiente en el inventario");
+		alert("Cantidad insuficiente en el inventario o producto no encontrado.");
 	}
 }
+
+// Update sale price at selling
+document
+	.getElementById("sale-product-select")
+	.addEventListener("change", (e) => {
+		const productId = e.target.value;
+		const product = db.products.find((p) => p.id === productId);
+
+		if (product) {
+			document.getElementById("sale-price").value = product.price;
+		}
+	});
 
 function openSupplyModal() {
 	const dataList = document.getElementById("product-list");
@@ -420,7 +450,7 @@ function openSupplyModal() {
 		dataList.appendChild(option);
 	});
 
-	populateCategorySelect("supply-product-category");
+	populateCategorySelect("supply-category");
 
 	document.getElementById("modal-supply").classList.add("active");
 }
@@ -429,6 +459,7 @@ function handleSupplySubmit(event) {
 	event.preventDefault();
 
 	const name = document.getElementById("supply-product-input").value.trim();
+	const category = document.getElementById("supply-category").value;
 	const quantity = parseInt(document.getElementById("supply-quantity").value);
 	const cost = parseFloat(document.getElementById("supply-cost").value);
 
@@ -450,6 +481,7 @@ function handleSupplySubmit(event) {
 		product = {
 			id: `prod-${Date.now()}`,
 			name: name,
+			category: category,
 			price: cost,
 			stock: quantity,
 		};
@@ -460,6 +492,7 @@ function handleSupplySubmit(event) {
 		id: `sup-${Date.now()}`,
 		product_id: product.id,
 		product_name: product.name,
+		category: product.category,
 		quantity: quantity,
 		cost_unit: cost,
 		total_cost: cost * quantity,
@@ -475,6 +508,26 @@ function handleSupplySubmit(event) {
 		"Compra registrada con éxito. \nAsegúrese de añadirle un precio de venta en el inventario.",
 	);
 }
+
+// Update category from inventory
+document
+	.getElementById("supply-product-input")
+	.addEventListener("input", (e) => {
+		const name = e.target.value.trim().toLowerCase();
+		const existingProduct = db.products.find(
+			(p) => p.name.toLowerCase() === name,
+		);
+		const categorySelect = document.getElementById("supply-category");
+
+		if (existingProduct) {
+			categorySelect.value = existingProduct.category;
+			categorySelect.disabled = true;
+			categorySelect.style.opacity = "0.7";
+		} else {
+			categorySelect.disabled = false;
+			categorySelect.style.opacity = "1";
+		}
+	});
 
 function openEditModal(productId) {
 	const product = db.products.find((p) => p.id === productId);
@@ -616,16 +669,20 @@ function handleImport(file) {
 
 // Exporting data
 function exportData() {
-	const downloadAnchorNode = document.createElement("a");
+	if (checkPremiumStatus()) {
+		const downloadAnchorNode = document.createElement("a");
 
-	downloadAnchorNode.setAttribute(
-		"href",
-		"data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db)),
-	);
-	downloadAnchorNode.setAttribute("download", "stox_backup.json");
-	document.body.appendChild(downloadAnchorNode);
-	downloadAnchorNode.click();
-	downloadAnchorNode.remove();
+		downloadAnchorNode.setAttribute(
+			"href",
+			"data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db)),
+		);
+		downloadAnchorNode.setAttribute("download", "stox_backup.json");
+		document.body.appendChild(downloadAnchorNode);
+		downloadAnchorNode.click();
+		downloadAnchorNode.remove();
+	} else {
+		document.getElementById("modal-premium").classList.add("active");
+	}
 }
 
 function loadFromStorage() {
@@ -723,7 +780,6 @@ async function validatePremiumCode() {
 
 		closeModal("modal-premium");
 		alert("¡Felicidades! Acceso Premium activado por 30 días.");
-		// location.reload();
 	} catch (err) {
 		console.error("Error Premium:", err);
 		alert(err.message || "Error al conectar con el servidor.");

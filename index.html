@@ -2,7 +2,10 @@
 <html lang="es">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+		/>
 
 		<meta property="og:title" content="Stox" />
 		<meta property="og:description" content="Control total de inventario" />
@@ -291,13 +294,13 @@
 				</div>
 
 				<div class="settings-card">
-					<div class="about-header">
+					<a href="http://synthocean.com" target="_blank">
 						<img
-							src="./assets/opengraph/so-white-logo-60.svg"
+							src="./assets/opengraph/so-logo-white-2.webp"
 							class="company-logo"
 						/>
-						<span class="version-badge">STOX v1.1.1</span>
-					</div>
+					</a>
+					<span class="version-badge">STOX v1.2</span>
 					<div class="legal-links">
 						<a
 							href="https://wa.me/5351643954?text=Hola. Me gustaría informar de un problema en STOX."
@@ -329,7 +332,7 @@
 				<span>Historial</span>
 			</button>
 			<button class="nav-item" onclick="switchView('view-dashboard', this)">
-				<img src="./assets/icons/chart-bar.svg" alt="" />
+				<img src="./assets/icons/chart-pie-slice.svg" alt="" />
 				<span>Panel</span>
 			</button>
 		</nav>
@@ -359,6 +362,17 @@
 							class="form-input"
 							min="1"
 							value="1"
+							required
+						/>
+					</div>
+					<div class="form-group">
+						<label>Precio de Venta (cada unidad)</label>
+						<input
+							type="number"
+							id="sale-price"
+							class="form-input"
+							step="0.01"
+							placeholder="0.00"
 							required
 						/>
 					</div>
@@ -392,7 +406,7 @@
 					</div>
 					<div class="form-group">
 						<label>Categoría</label>
-						<select id="supply-product-category" class="form-input"></select>
+						<select id="supply-category" class="form-input"></select>
 					</div>
 					<div class="form-group">
 						<label>Cantidad a Comprar</label>
@@ -492,25 +506,24 @@
 					</button>
 				</div>
 
-				<p class="premium-info">Desbloquea funciones exclusivas:</p>
-
 				<ul class="premium-features">
 					<li>Inventario ilimitado</li>
 					<li>Acceso al historial</li>
 					<li>Estadísticas detalladas</li>
+					<li>Exportación de datos</li>
 					<li>App para dependiente</li>
 				</ul>
 
 				<div class="pricing-container">
 					<div class="pricing-options">
 						<div class="price-item">
-							<span>Saldo:</span> <strong>200 CUP</strong>
+							<span>Saldo:</span> <strong>250 CUP</strong>
 						</div>
 						<div class="price-item">
-							<span>Efectivo:</span> <strong>300 CUP</strong>
+							<span>Efectivo:</span> <strong>400 CUP</strong>
 						</div>
 						<div class="price-item">
-							<span>Transf.:</span> <strong>400 CUP</strong>
+							<span>Transf.:</span> <strong>500 CUP</strong>
 						</div>
 					</div>
 				</div>
@@ -521,7 +534,7 @@
 						type="text"
 						id="premium-code"
 						class="form-input"
-						placeholder="XXXX-XXXX"
+						placeholder="XXXX-XXXX-XXXX-XXXX"
 					/>
 				</div>
 

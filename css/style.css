@@ -134,11 +134,7 @@ img {
 }
 
 .action-card {
-	background: linear-gradient(
-		to bottom right,
-		hsl(160, 56%, 30%),
-		hsl(163, 45%, 28%)
-	);
+	background: hsl(160, 56%, 30%);
 	border-radius: 28px;
 	padding: 2rem 1.5rem;
 	display: flex;
@@ -183,13 +179,13 @@ img {
 .stat-header {
 	display: flex;
 	align-items: center;
-	gap: 0.5rem;
+	gap: 0.3rem;
 	margin-bottom: 0.8rem;
 }
 
 .stat-icon {
-	width: 32px;
-	height: 32px;
+	width: 30px;
+	height: 30px;
 }
 
 .stat-label {
@@ -202,7 +198,7 @@ img {
 }
 
 .stat-value {
-	font-size: 1.5rem;
+	font-size: 1.4rem;
 	font-weight: 600;
 	color: var(--accent);
 }
@@ -389,12 +385,6 @@ input[list]::-webkit-calendar-picker-indicator {
 .btn-delete:hover {
 	background: var(--alert);
 	color: white;
-}
-
-.premium-info {
-	font-size: 1.15rem;
-	font-weight: 600;
-	margin-bottom: 1rem;
 }
 
 .premium-features {
@@ -604,7 +594,7 @@ input[list]::-webkit-calendar-picker-indicator {
 }
 
 .stock-badge {
-	font-size: 0.9rem;
+	font-size: 0.8rem;
 	font-weight: 500;
 	margin-top: 1rem;
 }
@@ -895,11 +885,15 @@ input[list]::-webkit-calendar-picker-indicator {
 }
 
 .settings-card:last-child {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 	text-align: center;
 }
 
 .company-logo {
 	width: 80%;
+	opacity: 0.6;
 	margin-bottom: 0.5rem;
 }
 
