@@ -269,7 +269,11 @@
 
 				<div class="settings-card">
 					<h3>Datos</h3>
-					<div class="settings-actions-grid">
+					<div class="settings-actions">
+						<button class="primary-btn" onclick="exportData()">
+							<img src="./assets/icons/file-arrow-up.svg" /> Backup
+						</button>
+
 						<button
 							class="primary-btn"
 							onclick="document.getElementById('input-import').click()"
@@ -284,23 +288,33 @@
 							onchange="handleImport(this.files[0])"
 						/>
 
-						<button class="primary-btn" onclick="exportData()">
-							<img src="./assets/icons/file-arrow-up.svg" /> Exportar
+						<button class="primary-btn" onclick="exportDataForSely()">
+							<img src="./assets/icons/export.svg" /> Enviar a SELY
+						</button>
+						<button class="btn-delete" onclick="clearDatabase()">
+							Borrar todos los datos
 						</button>
 					</div>
-					<button class="btn-delete" onclick="clearDatabase()">
-						Borrar todos los datos
-					</button>
 				</div>
 
 				<div class="settings-card">
-					<a href="http://synthocean.com" target="_blank">
-						<img
-							src="./assets/opengraph/so-logo-white-2.webp"
-							class="company-logo"
-						/>
-					</a>
-					<span class="version-badge">STOX v1.2</span>
+					<div class="companies-logos">
+						<a href="http://synthocean.com" target="_blank">
+							<img
+								src="./assets/opengraph/stox-logo-text.svg"
+								class="company-logo"
+							/>
+						</a>
+						<a href="http://synthocean.com" target="_blank">
+							<img
+								src="./assets/opengraph/so-logo-white-2.webp"
+								class="company-logo"
+							/>
+						</a>
+					</div>
+
+					<span class="version-badge">STOX v1.3.0</span>
+
 					<div class="legal-links">
 						<a
 							href="https://wa.me/5351643954?text=Hola. Me gustaría informar de un problema en STOX."
@@ -511,6 +525,7 @@
 					<li>Acceso al historial</li>
 					<li>Estadísticas detalladas</li>
 					<li>Exportación de datos</li>
+					<li>Copia de seguridad</li>
 					<li>App para dependiente</li>
 				</ul>
 
@@ -533,7 +548,7 @@
 					<input
 						type="text"
 						id="premium-code"
-						class="form-input"
+						class="form-input premium-code"
 						placeholder="XXXX-XXXX-XXXX-XXXX"
 					/>
 				</div>

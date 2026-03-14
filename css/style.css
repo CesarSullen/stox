@@ -372,7 +372,7 @@ input[list]::-webkit-calendar-picker-indicator {
 
 .btn-delete {
 	width: 100%;
-	padding: 1rem;
+	padding: 0.8rem;
 	background: transparent;
 	color: var(--alert);
 	border: 1px solid var(--alert);
@@ -435,6 +435,10 @@ input[list]::-webkit-calendar-picker-indicator {
 	color: var(--accent);
 	font-size: 1rem;
 	margin-top: 2px;
+}
+
+.premium-code {
+	text-align: center;
 }
 
 .contact-link {
@@ -859,9 +863,9 @@ input[list]::-webkit-calendar-picker-indicator {
 	font-size: 1.2rem;
 }
 
-.settings-actions-grid {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
+.settings-actions {
+	display: flex;
+	flex-direction: column;
 	gap: 0.8rem;
 	margin-bottom: 1rem;
 }
@@ -891,10 +895,15 @@ input[list]::-webkit-calendar-picker-indicator {
 	text-align: center;
 }
 
+.companies-logos {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	margin-block: 0.5rem;
+}
+
 .company-logo {
-	width: 80%;
-	opacity: 0.6;
-	margin-bottom: 0.5rem;
+	width: 100%;
 }
 
 .version-badge {
