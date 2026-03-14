@@ -70,9 +70,11 @@ function renderInventory(productsToDisplay = db.products) {
 
 	if (productsToDisplay.length === 0) {
 		inventoryList.innerHTML =
-			'<p class="no-results">Sin productos que mostrar.</p>';
+			'<p class="no-results">Sin productos que mostrar</p>';
 		return;
 	}
+
+	renderCategoryFilters();
 
 	const threshold = db.settings ? db.settings.stockThreshold : 5;
 
@@ -112,7 +114,6 @@ function renderInventory(productsToDisplay = db.products) {
             </div>
         `;
 
-		renderCategoryFilters();
 		inventoryList.insertAdjacentHTML("beforeend", itemHtml);
 	});
 }
@@ -121,11 +122,20 @@ function renderInventory(productsToDisplay = db.products) {
 function handleSearch(event) {
 	const searchTerm = event.target.value.toLowerCase();
 
-	const filteredProducts = db.products.filter((product) =>
-		product.name.toLowerCase().includes(searchTerm),
+	let filtered = db.products;
+	if (inventoryFilter === "low-stock") {
+		filtered = db.products.filter(
+			(p) => p.stock <= (db.settings.stockThreshold || 5),
+		);
+	} else if (inventoryFilter) {
+		filtered = db.products.filter((p) => p.category === inventoryFilter);
+	}
+
+	const results = filtered.filter((p) =>
+		p.name.toLowerCase().includes(searchTerm),
 	);
 
-	renderInventory(filteredProducts);
+	renderInventory(results);
 }
 
 function populateCategorySelect(selectId) {
@@ -186,7 +196,7 @@ function renderHistory() {
 	allEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
 
 	if (allEvents.length === 0) {
-		timeline.innerHTML = '<p class="no-results">Sin registros que mostrar.</p>';
+		timeline.innerHTML = '<p class="no-results">Sin registros que mostrar</p>';
 		return;
 	}
 
@@ -634,34 +644,48 @@ function handleImport(file) {
 		try {
 			const imported = JSON.parse(e.target.result);
 
+			// Backup
 			if (imported.products) {
 				const existingIds = new Set(db.products.map((p) => p.id));
 				const newProducts = imported.products.filter(
 					(p) => !existingIds.has(p.id),
 				);
 				db.products.push(...newProducts);
+
+				if (imported.categories) {
+					db.categories = [
+						...new Set([...db.categories, ...imported.categories]),
+					];
+				}
+				if (imported.settings) {
+					db.settings = { ...db.settings, ...imported.settings };
+				}
 			}
 
-			if (imported.sales) db.sales.push(...imported.sales);
-			if (imported.supplies) db.supplies.push(...imported.supplies);
+			// SELY data
+			if (imported.sales) {
+				const existingSaleIds = new Set(db.sales.map((s) => s.id));
+				const newSales = imported.sales.filter(
+					(s) => !existingSaleIds.has(s.id),
+				);
 
-			if (imported.categories) {
-				db.categories = [
-					...new Set([...db.categories, ...imported.categories]),
-				];
-			}
+				db.sales.push(...newSales);
 
-			if (imported.settings) {
-				db.settings = { ...db.settings, ...imported.settings };
+				// This one is for backup
+				if (imported.supplies) {
+					const existingSupplyIds = new Set(db.supplies.map((s) => s.id));
+					const newSupplies = imported.supplies.filter(
+						(s) => !existingSupplyIds.has(s.id),
+					);
+					db.supplies.push(...newSupplies);
+				}
 			}
 
 			saveToStorage();
-
-			alert("Datos importados con éxito");
-			switchView("view-settings", null); // Soft reload
+			alert("Datos importados con éxito.");
 		} catch (err) {
 			console.error("Error al parsear el JSON:", err);
-			alert("Error: El archivo no es válido.");
+			alert("Error: El archivo no es válido o está corrupto.");
 		}
 	};
 	reader.readAsText(file);
@@ -682,6 +706,46 @@ function exportData() {
 		downloadAnchorNode.remove();
 	} else {
 		document.getElementById("modal-premium").classList.add("active");
+	}
+}
+
+function exportDataForSely() {
+	if (!checkPremiumStatus()) {
+		document.getElementById("modal-premium").classList.add("active");
+		return;
+	}
+
+	const selyDB = {
+		products: db.products.map((p) => ({
+			id: p.id,
+			name: p.name,
+			category: p.category,
+			price: p.price,
+			stock: p.stock,
+		})),
+		categories: db.categories,
+		settings: {
+			stockThreshold: db.settings.stockThreshold,
+		},
+	};
+
+	const fileName = `sync_sely_${new Date().toISOString().slice(0, 10)}.json`;
+	const blob = new Blob([JSON.stringify(selyDB)], { type: "application/json" });
+	const file = new File([blob], fileName, { type: "application/json" });
+
+	if (navigator.canShare && navigator.canShare({ files: [file] })) {
+		navigator.share({
+			files: [file],
+			title: "Datos para SELY",
+			text: "Inventario para la app SELY",
+		});
+	} else {
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = fileName;
+		a.click();
+		URL.revokeObjectURL(url);
 	}
 }
 
