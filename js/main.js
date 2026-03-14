@@ -682,6 +682,7 @@ function handleImport(file) {
 			}
 
 			saveToStorage();
+			renderInventory();
 			alert("Datos importados con éxito.");
 		} catch (err) {
 			console.error("Error al parsear el JSON:", err);
@@ -855,6 +856,28 @@ function activatePremium(days = 30) {
 	const premiumData = { expiryDate: expiryDate };
 
 	localStorage.setItem("stox_premium", JSON.stringify(premiumData));
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+	const parsedUrl = new URL(window.location);
+
+	if (
+		parsedUrl.searchParams.has("shared_file") ||
+		window.location.search.includes("share")
+	) {
+		console.log("Archivo recibido mediante Share Target");
+	}
+});
+
+if ("launchQueue" in window) {
+	launchQueue.setConsumer(async (launchParams) => {
+		if (!launchParams.files.length) return;
+
+		for (const fileHandle of launchParams.files) {
+			const file = await fileHandle.getFile();
+			handleImport(file);
+		}
+	});
 }
 
 if ("serviceWorker" in navigator) {
