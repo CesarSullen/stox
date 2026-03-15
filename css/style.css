@@ -62,7 +62,7 @@ img {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	margin-top: 15px;
+	margin-top: 10px;
 }
 
 .app-name {
@@ -897,13 +897,13 @@ input[list]::-webkit-calendar-picker-indicator {
 
 .companies-logos {
 	display: flex;
+	justify-content: center;
 	align-items: center;
-	gap: 15px;
 	margin-block: 0.5rem;
 }
 
 .company-logo {
-	width: 100%;
+	width: 60%;
 }
 
 .version-badge {
