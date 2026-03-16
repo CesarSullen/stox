@@ -871,11 +871,17 @@ window.addEventListener("DOMContentLoaded", () => {
 
 if ("launchQueue" in window) {
 	launchQueue.setConsumer(async (launchParams) => {
-		if (!launchParams.files.length) return;
+		if (!launchParams.files || launchParams.files.length === 0) return;
 
 		for (const fileHandle of launchParams.files) {
-			const file = await fileHandle.getFile();
-			handleImport(file);
+			try {
+				const file = await fileHandle.getFile();
+				if (file.name.toLowerCase().endsWith(".json")) {
+					handleImport(file);
+				}
+			} catch (err) {
+				console.error("Error al acceder al archivo compartido:", err);
+			}
 		}
 	});
 }

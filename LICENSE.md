@@ -1,4 +1,4 @@
-Copyright (c) 2026 Cesar Sullen (Saro Koto)
+Copyright (c) 2026 Cesar Sullen (Saru Koto)
 
 All rights reserved.
 

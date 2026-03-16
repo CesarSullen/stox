@@ -5,8 +5,8 @@
 	"start_url": "./index.html",
 	"display": "standalone",
 	"scope": "./",
-	"background_color": "#0d0d0d",
-	"theme_color": "#0d0d0d",
+	"background_color": "#212121",
+	"theme_color": "#212121",
 	"icons": [
 		{
 			"src": "./assets/opengraph/logo.png",
@@ -16,18 +16,25 @@
 		}
 	],
 	"share_target": {
-		"action": "/index.html",
-		"method": "POST",
-		"enctype": "multipart/form-data",
+		"action": "index.html",
+		"method": "GET",
 		"params": {
 			"files": [
 				{
 					"name": "shared_file",
-					"accept": ["application/json", ".json"]
+					"accept": ["application/json", "text/plain", ".json"]
 				}
 			]
 		}
 	},
+	"file_handlers": [
+		{
+			"action": "index.html",
+			"accept": {
+				"application/json": [".json"]
+			}
+		}
+	],
 	"screenshots": [
 		{
 			"src": "./assets/screenshots/mobile-home.png",
