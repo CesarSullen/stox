@@ -5,8 +5,8 @@
 	"start_url": "./index.html",
 	"display": "standalone",
 	"scope": "./",
-	"background_color": "#212121",
-	"theme_color": "#212121",
+	"background_color": "#0D0D0D",
+	"theme_color": "##0D0D0D",
 	"icons": [
 		{
 			"src": "./assets/opengraph/logo.png",
