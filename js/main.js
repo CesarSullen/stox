@@ -54,7 +54,6 @@ function renderDashboard() {
 
 	document.getElementById("home-stat-income").textContent =
 		`$${data.income.toFixed(2)}`;
-	document.getElementById("home-stat-sales").textContent = data.salesCount;
 	document.getElementById("home-stat-profit").textContent =
 		`$${profit.toFixed(2)}`;
 	document.getElementById("home-stat-inventory-value").textContent =
@@ -281,14 +280,10 @@ function renderStats(period, element) {
 	profitEl.textContent = `$${profit.toFixed(2)}`;
 	profitEl.style.color = profit >= 0 ? "#4CAF50" : "#FF4D4D";
 
-	// Best Sellers (Quantity)
-	renderTopList(data.filteredSales, "top-products-quantity", "quantity");
-
-	// Best Sellers (Income)
-	renderTopList(data.filteredSales, "top-products-income", "income");
-
-	// Best Sellers (Profit)
-	renderTopList(data.filteredSales, "top-products-profit", "profit");
+	renderWeeklyChart();
+	renderHourlyChart();
+	renderTopList("top-products-quantity", "quantity");
+	renderTopList("top-products-profit", "profit");
 }
 
 // Calculate stats & filter top sales
@@ -330,7 +325,8 @@ function calculateMetrics(period) {
 }
 
 // Lists
-function renderTopList(sales, containerId, keyType) {
+function renderTopList(containerId, keyType) {
+	const sales = db.sales;
 	const list = document.getElementById(containerId);
 	if (!list) return;
 	list.innerHTML = "";
@@ -342,9 +338,8 @@ function renderTopList(sales, containerId, keyType) {
 		const costUnit = supply ? supply.cost_unit : 0;
 
 		let valueToAdd = 0;
-		if (keyType === "quantity") valueToAdd = s.quantity;
-		if (keyType === "income") valueToAdd = s.total;
 		if (keyType === "profit") valueToAdd = s.total - costUnit * s.quantity;
+		if (keyType === "quantity") valueToAdd = s.quantity;
 
 		counts[s.product_name] = (counts[s.product_name] || 0) + valueToAdd;
 	});
@@ -367,6 +362,128 @@ function renderTopList(sales, containerId, keyType) {
         `,
 		);
 	});
+}
+
+// Charts
+function getWeeklyPerformance() {
+	const daysName = [
+		"Domingo",
+		"Lunes",
+		"Martes",
+		"Miércoles",
+		"Jueves",
+		"Viernes",
+		"Sábado",
+	];
+	let dayCounts = {
+		Lunes: 0,
+		Martes: 0,
+		Miércoles: 0,
+		Jueves: 0,
+		Viernes: 0,
+		Sábado: 0,
+		Domingo: 0,
+	};
+
+	const totalSales = db.sales.length;
+	if (totalSales === 0) return [];
+
+	db.sales.forEach((sale) => {
+		const date = new Date(sale.date);
+		const dayName = daysName[date.getDay()];
+		dayCounts[dayName]++;
+	});
+
+	return Object.keys(dayCounts)
+		.map((name) => ({
+			name: name,
+			count: dayCounts[name],
+			percentage: ((dayCounts[name] / totalSales) * 100).toFixed(),
+		}))
+		.sort((a, b) => b.count - a.count);
+}
+
+function renderWeeklyChart() {
+	const data = getWeeklyPerformance();
+	const barsArea = document.getElementById("weekly-bars-area");
+	const labelsAxis = document.getElementById("weekly-labels-axis");
+
+	if (!data || data.length === 0) {
+		barsArea.innerHTML = '<p class="no-results">Sin datos</p>';
+		return;
+	}
+
+	barsArea.innerHTML = "";
+	labelsAxis.innerHTML = "";
+
+	data.forEach((day) => {
+		const barWrapper = document.createElement("div");
+		barWrapper.className = "bar-wrapper";
+		barWrapper.innerHTML = `
+            <div class="bar-fill" 
+                 style="height: ${day.percentage}%" 
+                 data-percent="${day.percentage}%">
+            </div>
+        `;
+		barsArea.appendChild(barWrapper);
+
+		const label = document.createElement("div");
+		label.className = "axis-label";
+		label.innerText = day.name.substring(0, 3); // "Lun", "Mar", etc.
+		labelsAxis.appendChild(label);
+	});
+}
+
+function getHourlyPerformance() {
+	let hourCounts = {};
+	const totalSales = db.sales.length;
+	if (totalSales === 0) return [];
+
+	db.sales.forEach((sale) => {
+		const date = new Date(sale.date);
+		const hour = date.getHours();
+
+		// 2h intervals
+		const start = Math.floor(hour / 2) * 2;
+		const end = start + 2;
+		const label = `${start.toString().padStart(2, "0")}:00 - ${end.toString().padStart(2, "0")}:00`;
+
+		hourCounts[label] = (hourCounts[label] || 0) + 1;
+	});
+
+	return Object.keys(hourCounts)
+		.map((label) => ({
+			timeRange: label,
+			count: hourCounts[label],
+			percentage: ((hourCounts[label] / totalSales) * 100).toFixed(),
+		}))
+		.sort((a, b) => a.timeRange.localeCompare(b.timeRange));
+}
+
+function renderHourlyChart() {
+	const data = getHourlyPerformance();
+	const container = document.getElementById("hourly-chart-container");
+
+	if (!data || data.length === 0) {
+		container.innerHTML = '<p class="no-results">Sin datos</p>';
+		return;
+	}
+
+	container.innerHTML = data
+		.map(
+			(item) => `
+        <div class="horizontal-row">
+            <div class="row-info">
+                <span>${item.timeRange}</span>
+                <span class="row-percentage">${item.percentage}%</span>
+            </div>
+            <div class="row-bar-wrapper">
+                <div class="row-bar-fill" style="width: ${item.percentage}%"></div>
+            </div>
+        </div>
+    `,
+		)
+		.join("");
 }
 
 // Modals
@@ -547,6 +664,7 @@ function openEditModal(productId) {
 
 	document.getElementById("edit-product-id").value = product.id;
 	document.getElementById("edit-product-name").value = product.name;
+	document.getElementById("edit-product-category").value = product.category;
 	document.getElementById("edit-product-price").value = product.price;
 	document.getElementById("edit-product-stock").value = product.stock;
 
