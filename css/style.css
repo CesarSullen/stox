@@ -626,14 +626,14 @@ input[list]::-webkit-calendar-picker-indicator {
 }
 
 .item-values .quantity {
-	font-size: 0.9rem;
-	color: var(--text-muted);
+	font-size: 1rem;
+	font-weight: 600;
 }
 
 .item-values .price {
 	font-size: 1rem;
-	font-weight: 600;
 	margin-top: 2px;
+	color: var(--accent);
 }
 
 .unified-timeline {
@@ -900,10 +900,6 @@ input[list]::-webkit-calendar-picker-indicator {
 
 .top-product-item:last-child {
 	border-bottom: none;
-}
-
-.top-product-item span {
-	color: var(--text-muted);
 }
 
 .top-product-item strong {
