@@ -38,28 +38,42 @@
 	"screenshots": [
 		{
 			"src": "./assets/screenshots/mobile-home.png",
-			"sizes": "1810x2146",
+			"sizes": "1600x2146",
 			"type": "image/png",
 			"form_factor": "narrow",
 			"label": "Vista principal"
 		},
 		{
 			"src": "./assets/screenshots/mobile-inventory.png",
-			"sizes": "1810x2146",
+			"sizes": "1600x2146",
 			"type": "image/png",
 			"form_factor": "narrow",
-			"label": "Dashboard de inventario"
+			"label": "Vista de inventario"
 		},
 		{
 			"src": "./assets/screenshots/mobile-history.png",
-			"sizes": "1810x2146",
+			"sizes": "1600x2146",
 			"type": "image/png",
 			"form_factor": "narrow",
 			"label": "Vista de historial"
 		},
 		{
 			"src": "./assets/screenshots/mobile-dashboard.png",
-			"sizes": "1810x2146",
+			"sizes": "1600x2146",
+			"type": "image/png",
+			"form_factor": "narrow",
+			"label": "Dashboard de Estadísticas"
+		},
+		{
+			"src": "./assets/screenshots/mobile-dashboard-2.png",
+			"sizes": "1600x2146",
+			"type": "image/png",
+			"form_factor": "narrow",
+			"label": "Dashboard de Estadísticas"
+		},
+		{
+			"src": "./assets/screenshots/mobile-dashboard-3.png",
+			"sizes": "1600x2146",
 			"type": "image/png",
 			"form_factor": "narrow",
 			"label": "Dashboard de Estadísticas"
