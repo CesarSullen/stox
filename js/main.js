@@ -107,8 +107,8 @@ function renderInventory(productsToDisplay = db.products) {
                     </div>
                 </div>
                 <div class="item-values">
+				<div class="price">$${product.price.toFixed(2)}</div>
                     <div class="quantity">${product.stock} u</div>
-                    <div class="price">$${product.price.toFixed(2)}</div>
                 </div>
             </div>
         `;
@@ -270,7 +270,6 @@ function renderStats(period, element) {
 
 	document.getElementById("stat-income").textContent =
 		`$${data.income.toFixed(2)}`;
-	document.getElementById("stat-sales-count").textContent = data.salesCount;
 	document.getElementById("stat-investment").textContent =
 		`$${data.investment.toFixed(2)}`;
 	document.getElementById("stat-inventory-value").textContent =
@@ -317,7 +316,6 @@ function calculateMetrics(period) {
 
 	return {
 		income: filteredSales.reduce((sum, s) => sum + s.total, 0),
-		salesCount: filteredSales.length,
 		investment: filteredSupplies.reduce((sum, s) => sum + s.total_cost, 0),
 		inventoryValue: db.products.reduce((sum, p) => sum + p.stock * p.price, 0),
 		filteredSales: filteredSales,
@@ -346,7 +344,7 @@ function renderTopList(containerId, keyType) {
 
 	const sorted = Object.entries(counts)
 		.sort((a, b) => b[1] - a[1])
-		.slice(0, 5);
+		.slice(0, 10);
 
 	sorted.forEach(([name, value]) => {
 		const displayValue =

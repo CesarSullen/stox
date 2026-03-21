@@ -72,7 +72,7 @@
 								src="./assets/icons/money-wavy-duotone.svg"
 								class="stat-icon"
 							/>
-							<span class="stat-label">Ganancias de Hoy</span>
+							<span class="stat-label">Ganancia Bruta Hoy</span>
 						</div>
 						<h3 id="home-stat-profit" class="stat-value">$0.00</h3>
 					</div>
@@ -123,7 +123,7 @@
 								Compras
 							</div>
 							<div class="filter-option" onclick="applyFilter('sale')">
-								Ventas de Hoy
+								Ventas
 							</div>
 						</div>
 					</div>
@@ -154,6 +154,17 @@
 						<div class="stat-card">
 							<div class="stat-header">
 								<img
+									src="./assets/icons/shopping-cart-simple-duotone.svg"
+									class="stat-icon"
+								/>
+								<span class="stat-label">Valor de Compras</span>
+							</div>
+							<h3 id="stat-investment" class="stat-value">$0.00</h3>
+						</div>
+
+						<div class="stat-card">
+							<div class="stat-header">
+								<img
 									src="./assets/icons/chart-line-up-duotone.svg"
 									class="stat-icon"
 								/>
@@ -176,30 +187,12 @@
 						<div class="stat-card">
 							<div class="stat-header">
 								<img
-									src="./assets/icons/shopping-cart-simple-duotone.svg"
-									class="stat-icon"
-								/>
-								<span class="stat-label">Total Invertido</span>
-							</div>
-							<h3 id="stat-investment" class="stat-value">$0.00</h3>
-						</div>
-						<div class="stat-card">
-							<div class="stat-header">
-								<img
 									src="./assets/icons/package-duotone.svg"
 									class="stat-icon"
 								/>
 								<span class="stat-label">Inventario Actual</span>
 							</div>
 							<h3 id="stat-inventory-value" class="stat-value">$0.00</h3>
-						</div>
-
-						<div class="stat-card">
-							<div class="stat-header">
-								<img src="./assets/icons/tag-duotone.svg" class="stat-icon" />
-								<span class="stat-label">Total Ventas</span>
-							</div>
-							<h3 id="stat-sales-count" class="stat-value">0</h3>
 						</div>
 					</div>
 
@@ -219,14 +212,14 @@
 					<div class="top-lists-container">
 						<div class="stat-card">
 							<div class="card-header-actions">
-								<h3>Top 5: Más Rentables</h3>
+								<h3>Top 10: Más Rentables</h3>
 							</div>
 							<div id="top-products-profit" class="top-list-content"></div>
 						</div>
 
 						<div class="stat-card">
 							<div class="card-header-actions">
-								<h3>Top 5: Más Vendidos</h3>
+								<h3>Top 10: Más Vendidos</h3>
 							</div>
 							<div id="top-products-quantity" class="top-list-content"></div>
 						</div>
@@ -305,7 +298,7 @@
 						/>
 					</div>
 
-					<span class="version-badge">v1.4.0</span>
+					<span class="version-badge">v1.4.1</span>
 
 					<div class="legal-links">
 						<a
