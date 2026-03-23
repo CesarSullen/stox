@@ -6,7 +6,7 @@
 	"display": "standalone",
 	"scope": "./",
 	"background_color": "#0D0D0D",
-	"theme_color": "##0D0D0D",
+	"theme_color": "#0D0D0D",
 	"icons": [
 		{
 			"src": "./assets/opengraph/logo.png",
@@ -17,12 +17,13 @@
 	],
 	"share_target": {
 		"action": "index.html",
-		"method": "GET",
+		"method": "POST",
+		"enctype": "multipart/form-data",
 		"params": {
 			"files": [
 				{
 					"name": "shared_file",
-					"accept": ["application/json", "text/plain", ".json"]
+					"accept": ["application/json", ".json"]
 				}
 			]
 		}
