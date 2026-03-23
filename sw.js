@@ -1,4 +1,4 @@
-const CACHE_NAME = "stox-v1.4.1";
+const CACHE_NAME = "stox-v1.5.0";
 const STATIC_ASSETS = [
 	// Page
 	"./",
@@ -41,6 +41,7 @@ const STATIC_ASSETS = [
 
 // Install
 self.addEventListener("install", (event) => {
+	self.skipWaiting();
 	event.waitUntil(
 		caches.open(CACHE_NAME).then((cache) => {
 			return cache.addAll(STATIC_ASSETS);
@@ -51,18 +52,29 @@ self.addEventListener("install", (event) => {
 // Activate
 self.addEventListener("activate", (event) => {
 	event.waitUntil(
-		caches.keys().then((keys) => {
-			return Promise.all(
-				keys
-					.filter((key) => key !== CACHE_NAME)
-					.map((key) => caches.delete(key)),
-			);
-		}),
+		caches
+			.keys()
+			.then((keys) => {
+				return Promise.all(
+					keys
+						.filter((key) => key !== CACHE_NAME)
+						.map((key) => caches.delete(key)),
+				);
+			})
+			.then(() => self.clients.claim()),
 	);
 });
 
 // Fetch (cache-first)
 self.addEventListener("fetch", (event) => {
+	if (
+		event.request.method === "POST" &&
+		event.request.url.includes("index.html")
+	) {
+		event.respondWith(Response.redirect("./index.html?share=true", 303));
+		return;
+	}
+
 	event.respondWith(
 		caches.match(event.request).then((response) => {
 			return response || fetch(event.request);

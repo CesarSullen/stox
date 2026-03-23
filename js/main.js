@@ -50,7 +50,9 @@ function switchView(viewId, btnElement) {
 
 function renderDashboard() {
 	const data = calculateMetrics("today");
-	const profit = data.income - data.investment;
+	const profit = data.filteredSales.reduce((sum, s) => {
+		return sum + (s.total - (s.acquisition_cost_total || 0));
+	}, 0);
 
 	document.getElementById("home-stat-income").textContent =
 		`$${data.income.toFixed(2)}`;
@@ -208,6 +210,22 @@ function renderHistory() {
 			minute: "2-digit",
 		});
 
+		let extraInfo = "";
+		if (!isSale) {
+			const realUnit = event.cost_unit.toFixed(2);
+			const transportText =
+				event.transport_cost > 0
+					? `<span class="timeline-sub-text">Precio de Transporte: +$${event.transport_cost.toFixed(2)}/u</span>`
+					: "";
+
+			extraInfo = `
+                <div class="timeline-extra-info">
+                    <span class="timeline-sub-text">Precio de Compra: $${realUnit}/u</span>
+                    ${transportText}
+                </div>
+            `;
+		}
+
 		const html = `
             <div class="timeline-item">
                 <div class="timeline-icon">
@@ -215,8 +233,11 @@ function renderHistory() {
                 </div>
                 <div class="timeline-item-content">
                     <div class="timeline-main">
-                        <strong>${event.product_name}</strong>
-						<span>${event.quantity} u</span>
+                        <div>
+                            <strong>${event.product_name}</strong>
+                            ${extraInfo}
+                        </div>
+                        <span>${event.quantity} u</span>
                     </div>
                     <div class="timeline-details">
                         <strong class="timeline-amount ${isSale ? "type-sale" : "type-supply"}">
@@ -266,7 +287,9 @@ function renderStats(period, element) {
 	if (element) element.classList.add("active");
 
 	const data = calculateMetrics(period);
-	const profit = data.income - data.investment;
+	const profit = data.filteredSales.reduce((sum, s) => {
+		return sum + (s.total - (s.acquisition_cost_total || 0));
+	}, 0);
 
 	document.getElementById("stat-income").textContent =
 		`$${data.income.toFixed(2)}`;
@@ -324,20 +347,17 @@ function calculateMetrics(period) {
 
 // Lists
 function renderTopList(containerId, keyType) {
-	const sales = db.sales;
 	const list = document.getElementById(containerId);
 	if (!list) return;
 	list.innerHTML = "";
 
 	const counts = {};
 
-	sales.forEach((s) => {
-		const supply = db.supplies.find((sup) => sup.product_id === s.product_id);
-		const costUnit = supply ? supply.cost_unit : 0;
-
-		let valueToAdd = 0;
-		if (keyType === "profit") valueToAdd = s.total - costUnit * s.quantity;
-		if (keyType === "quantity") valueToAdd = s.quantity;
+	db.sales.forEach((s) => {
+		let valueToAdd =
+			keyType === "quantity"
+				? s.quantity
+				: s.total - (s.acquisition_cost_total || 0);
 
 		counts[s.product_name] = (counts[s.product_name] || 0) + valueToAdd;
 	});
@@ -523,21 +543,47 @@ function handleSaleSubmit(event) {
 	event.preventDefault();
 
 	const productId = document.getElementById("sale-product-select").value.trim();
-	const quantity = parseInt(document.getElementById("sale-quantity").value);
+	const quantityToSell = parseInt(
+		document.getElementById("sale-quantity").value,
+	);
 	const priceAtSale = parseFloat(document.getElementById("sale-price").value);
 	const product = db.products.find((p) => p.id === productId);
 
-	if (product && product.stock >= quantity) {
-		product.stock -= quantity;
+	if (product && product.stock >= quantityToSell) {
+		let remaining = quantityToSell;
+		let totalCostOfSale = 0;
+
+		if (!product.batches || product.batches.length === 0) {
+			product.batches = [
+				{ quantity: product.stock, cost: product.price / 1.3 },
+			];
+		}
+
+		while (remaining > 0 && product.batches.length > 0) {
+			let batch = product.batches[0];
+
+			if (batch.quantity <= remaining) {
+				totalCostOfSale += batch.quantity * batch.cost;
+				remaining -= batch.quantity;
+				product.batches.shift();
+			} else {
+				totalCostOfSale += remaining * batch.cost;
+				batch.quantity -= remaining;
+				remaining = 0;
+			}
+		}
+
+		product.stock -= quantityToSell;
 		product.price = priceAtSale;
 
 		db.sales.push({
 			id: `sale-${Date.now()}`,
 			product_id: product.id,
 			product_name: product.name,
-			quantity: quantity,
+			quantity: quantityToSell,
 			price_at_sale: priceAtSale,
-			total: priceAtSale * quantity,
+			total: priceAtSale * quantityToSell,
+			acquisition_cost_total: totalCostOfSale,
 			date: new Date().toISOString(),
 			type: "sale",
 		});
@@ -587,6 +633,8 @@ function handleSupplySubmit(event) {
 	const category = document.getElementById("supply-category").value;
 	const quantity = parseInt(document.getElementById("supply-quantity").value);
 	const cost = parseFloat(document.getElementById("supply-cost").value);
+	const transport =
+		parseFloat(document.getElementById("supply-transport").value) || 0;
 
 	if (!checkPremiumStatus() && db.products.length >= 10) {
 		alert(
@@ -596,19 +644,25 @@ function handleSupplySubmit(event) {
 		return;
 	}
 
+	const realUnitCost = cost + transport;
+	const totalAcquisition = realUnitCost * quantity;
+
 	let product = db.products.find(
 		(p) => p.name.toLowerCase() === name.toLowerCase(),
 	);
 
 	if (product) {
+		if (!product.batches) product.batches = [];
+		product.batches.push({ quantity: quantity, cost: realUnitCost });
 		product.stock += quantity;
 	} else {
 		product = {
 			id: `prod-${Date.now()}`,
 			name: name,
 			category: category,
-			price: cost,
+			price: cost * 1.3,
 			stock: quantity,
+			batches: [{ quantity: quantity, cost: realUnitCost }],
 		};
 		db.products.push(product);
 	}
@@ -617,10 +671,10 @@ function handleSupplySubmit(event) {
 		id: `sup-${Date.now()}`,
 		product_id: product.id,
 		product_name: product.name,
-		category: product.category,
 		quantity: quantity,
 		cost_unit: cost,
-		total_cost: cost * quantity,
+		transport_cost: transport,
+		total_cost: totalAcquisition,
 		date: new Date().toISOString(),
 		type: "purchase",
 	});
@@ -762,11 +816,16 @@ function handleImport(file) {
 
 			// Backup
 			if (imported.products) {
-				const existingIds = new Set(db.products.map((p) => p.id));
-				const newProducts = imported.products.filter(
-					(p) => !existingIds.has(p.id),
-				);
-				db.products.push(...newProducts);
+				imported.products.forEach((newP) => {
+					let existingP = db.products.find((p) => p.id === newP.id);
+					if (existingP) {
+						existingP.stock = newP.stock;
+						existingP.batches = newP.batches || [];
+						existingP.price = newP.price;
+					} else {
+						db.products.push(newP);
+					}
+				});
 
 				if (imported.categories) {
 					db.categories = [
@@ -839,6 +898,7 @@ function exportDataForSely() {
 			category: p.category,
 			price: p.price,
 			stock: p.stock,
+			batches: p.batches || [],
 		})),
 		categories: db.categories,
 		settings: {
@@ -846,7 +906,7 @@ function exportDataForSely() {
 		},
 	};
 
-	const fileName = `sync_sely_${new Date().toISOString().slice(0, 10)}.json`;
+	const fileName = `inventario_stox_${new Date().toISOString().slice(0, 10)}.json`;
 	const blob = new Blob([JSON.stringify(selyDB)], { type: "application/json" });
 	const file = new File([blob], fileName, { type: "application/json" });
 
@@ -973,17 +1033,6 @@ function activatePremium(days = 30) {
 
 	localStorage.setItem("stox_premium", JSON.stringify(premiumData));
 }
-
-window.addEventListener("DOMContentLoaded", () => {
-	const parsedUrl = new URL(window.location);
-
-	if (
-		parsedUrl.searchParams.has("shared_file") ||
-		window.location.search.includes("share")
-	) {
-		console.log("Archivo recibido mediante Share Target");
-	}
-});
 
 if ("launchQueue" in window) {
 	launchQueue.setConsumer(async (launchParams) => {

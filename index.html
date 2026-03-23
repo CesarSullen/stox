@@ -277,6 +277,7 @@
 							type="file"
 							id="input-import"
 							hidden
+							enctype="multipart/form-data"
 							accept=".json"
 							onchange="handleImport(this.files[0])"
 						/>
@@ -298,7 +299,7 @@
 						/>
 					</div>
 
-					<span class="version-badge">v1.4.1</span>
+					<span class="version-badge">v1.5.0</span>
 
 					<div class="legal-links">
 						<a
@@ -427,6 +428,15 @@
 							min="0"
 							placeholder="0.00"
 							required
+						/>
+					</div>
+					<div class="form-group">
+						<label>Costo Transportación (unidad)</label>
+						<input
+							type="number"
+							id="supply-transport"
+							class="form-input"
+							placeholder="0.00"
 						/>
 					</div>
 					<div class="modal-actions">
