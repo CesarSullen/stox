@@ -805,7 +805,6 @@ function removeCategory(name) {
 	renderSettings();
 }
 
-// Importing data
 function handleImport(file) {
 	if (!file) return;
 
@@ -814,7 +813,7 @@ function handleImport(file) {
 		try {
 			const imported = JSON.parse(e.target.result);
 
-			// Backup
+			// BACKUP
 			if (imported.products) {
 				imported.products.forEach((newP) => {
 					let existingP = db.products.find((p) => p.id === newP.id);
@@ -837,16 +836,46 @@ function handleImport(file) {
 				}
 			}
 
-			// SELY data
+			// SELY OR BACKUP
 			if (imported.sales) {
 				const existingSaleIds = new Set(db.sales.map((s) => s.id));
-				const newSales = imported.sales.filter(
-					(s) => !existingSaleIds.has(s.id),
-				);
 
-				db.sales.push(...newSales);
+				imported.sales.forEach((sale) => {
+					if (!existingSaleIds.has(sale.id)) {
+						// If there's not acquisition cost, it comes from SELY
+						if (sale.acquisition_cost_total === undefined) {
+							const product = db.products.find((p) => p.id === sale.product_id);
 
-				// This one is for backup
+							if (product && product.batches && product.batches.length > 0) {
+								let remaining = sale.quantity;
+								let costForThisSale = 0;
+
+								while (remaining > 0 && product.batches.length > 0) {
+									let batch = product.batches[0];
+									if (batch.quantity <= remaining) {
+										costForThisSale += batch.quantity * batch.cost;
+										remaining -= batch.quantity;
+										product.batches.shift();
+									} else {
+										costForThisSale += remaining * batch.cost;
+										batch.quantity -= remaining;
+										remaining = 0;
+									}
+								}
+								sale.acquisition_cost_total = costForThisSale;
+								product.stock -= sale.quantity;
+							} else if (product) {
+								sale.acquisition_cost_total =
+									(product.price / 1.3) * sale.quantity;
+								product.stock -= sale.quantity;
+							}
+						}
+
+						db.sales.push(sale);
+					}
+				});
+
+				// BACKUP
 				if (imported.supplies) {
 					const existingSupplyIds = new Set(db.supplies.map((s) => s.id));
 					const newSupplies = imported.supplies.filter(
@@ -858,7 +887,8 @@ function handleImport(file) {
 
 			saveToStorage();
 			renderInventory();
-			alert("Datos importados con éxito.");
+			renderDashboard();
+			alert("Sincronización completada con éxito.");
 		} catch (err) {
 			console.error("Error al parsear el JSON:", err);
 			alert("Error: El archivo no es válido o está corrupto.");
@@ -898,7 +928,6 @@ function exportDataForSely() {
 			category: p.category,
 			price: p.price,
 			stock: p.stock,
-			batches: p.batches || [],
 		})),
 		categories: db.categories,
 		settings: {
@@ -1033,6 +1062,20 @@ function activatePremium(days = 30) {
 
 	localStorage.setItem("stox_premium", JSON.stringify(premiumData));
 }
+
+async function trackProjectActivity(projectName) {
+	try {
+		const { error } = await _supabase.rpc("increment_visit", {
+			name_param: projectName,
+		});
+
+		if (error) throw error;
+	} catch (err) {
+		console.warn("Offline mode");
+	}
+}
+
+trackProjectActivity("STOX");
 
 if ("launchQueue" in window) {
 	launchQueue.setConsumer(async (launchParams) => {
