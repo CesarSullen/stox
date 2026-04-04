@@ -128,8 +128,6 @@ img {
 }
 
 .quick-actions {
-	/* display: flex;
-	flex-direction: column; */
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
 	gap: 0.5rem;
@@ -273,7 +271,7 @@ img {
 	pointer-events: all;
 }
 
-.close-btn {
+.modal-header-btn {
 	background: none;
 	border: none;
 	cursor: pointer;
@@ -282,7 +280,7 @@ img {
 	justify-content: center;
 }
 
-.close-btn img {
+.modal-header-btn img {
 	width: 32px;
 	height: 32px;
 }
@@ -318,7 +316,7 @@ img {
 	display: block;
 	font-size: 0.9rem;
 	color: var(--text-muted);
-	margin-bottom: 0.2rem;
+	margin-block: 0.15rem;
 	text-transform: uppercase;
 }
 
@@ -452,6 +450,10 @@ input[list]::-webkit-calendar-picker-indicator {
 
 .contact-link:hover {
 	text-decoration: underline;
+}
+
+.avg-cost {
+	color: var(--accent);
 }
 
 /* Views */

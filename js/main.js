@@ -1,4 +1,5 @@
 let db = {
+	app: "STOX",
 	products: [
 		/* { id, name, price, stock, category } */
 	],
@@ -714,9 +715,28 @@ function openEditModal(productId) {
 
 	populateCategorySelect("edit-product-category");
 
+	// Average Cost
+	let avgCost = 0;
+	if (product.batches && product.batches.length > 0) {
+		const totalValue = product.batches.reduce(
+			(sum, b) => sum + b.quantity * b.cost,
+			0,
+		);
+		const totalQuantity = product.batches.reduce(
+			(sum, b) => sum + b.quantity,
+			0,
+		);
+		avgCost = totalQuantity > 0 ? totalValue / totalQuantity : 0;
+	}
+
+	const shareProductBtn = document.getElementById("btn-share-product");
+	shareProductBtn.onclick = () => shareProduct(productId);
+
 	document.getElementById("edit-product-id").value = product.id;
 	document.getElementById("edit-product-name").value = product.name;
 	document.getElementById("edit-product-category").value = product.category;
+	document.getElementById("edit-avg-cost").textContent =
+		`$${avgCost.toFixed(2)}`;
 	document.getElementById("edit-product-price").value = product.price;
 	document.getElementById("edit-product-stock").value = product.stock;
 
@@ -742,6 +762,45 @@ function handleEditSubmit(event) {
 		saveToStorage();
 		renderInventory();
 		closeModal("modal-edit");
+	}
+}
+
+function shareProduct(productId) {
+	const product = db.products.find((p) => p.id === productId);
+	if (!product) return;
+
+	const singleProductData = {
+		products: [
+			{
+				id: product.id,
+				name: product.name,
+				category: product.category,
+				price: product.price,
+				stock: product.stock,
+			},
+		],
+		categories: [product.category],
+	};
+
+	const fileName = `producto_${product.name.replace(/\s+/g, "_")}.json`;
+	const blob = new Blob([JSON.stringify(singleProductData)], {
+		type: "application/json",
+	});
+	const file = new File([blob], fileName, { type: "application/json" });
+
+	if (navigator.canShare && navigator.canShare({ files: [file] })) {
+		navigator.share({
+			files: [file],
+			title: "Producto para SELY",
+			text: "Nuevo producto para el inventario de SELY",
+		});
+	} else {
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = fileName;
+		a.click();
+		URL.revokeObjectURL(url);
 	}
 }
 
@@ -813,43 +872,37 @@ function handleImport(file) {
 		try {
 			const imported = JSON.parse(e.target.result);
 
-			// BACKUP
+			const isFullBackup = imported.app === "STOX";
+
 			if (imported.products) {
 				imported.products.forEach((newP) => {
 					let existingP = db.products.find((p) => p.id === newP.id);
 					if (existingP) {
-						existingP.stock = newP.stock;
-						existingP.batches = newP.batches || [];
+						if (isFullBackup) {
+							existingP.stock = newP.stock;
+							existingP.batches = newP.batches || [];
+						}
+
+						existingP.name = newP.name;
 						existingP.price = newP.price;
+						existingP.category = newP.category;
 					} else {
 						db.products.push(newP);
 					}
 				});
-
-				if (imported.categories) {
-					db.categories = [
-						...new Set([...db.categories, ...imported.categories]),
-					];
-				}
-				if (imported.settings) {
-					db.settings = { ...db.settings, ...imported.settings };
-				}
 			}
 
-			// SELY OR BACKUP
 			if (imported.sales) {
 				const existingSaleIds = new Set(db.sales.map((s) => s.id));
 
 				imported.sales.forEach((sale) => {
 					if (!existingSaleIds.has(sale.id)) {
-						// If there's not acquisition cost, it comes from SELY
-						if (sale.acquisition_cost_total === undefined) {
-							const product = db.products.find((p) => p.id === sale.product_id);
+						const product = db.products.find((p) => p.id === sale.product_id);
 
-							if (product && product.batches && product.batches.length > 0) {
+						if (!isFullBackup && product) {
+							if (product.batches && product.batches.length > 0) {
 								let remaining = sale.quantity;
 								let costForThisSale = 0;
-
 								while (remaining > 0 && product.batches.length > 0) {
 									let batch = product.batches[0];
 									if (batch.quantity <= remaining) {
@@ -863,26 +916,26 @@ function handleImport(file) {
 									}
 								}
 								sale.acquisition_cost_total = costForThisSale;
-								product.stock -= sale.quantity;
-							} else if (product) {
+							} else {
 								sale.acquisition_cost_total =
 									(product.price / 1.3) * sale.quantity;
-								product.stock -= sale.quantity;
 							}
+
+							product.stock -= sale.quantity;
 						}
 
 						db.sales.push(sale);
 					}
 				});
+			}
 
-				// BACKUP
-				if (imported.supplies) {
-					const existingSupplyIds = new Set(db.supplies.map((s) => s.id));
-					const newSupplies = imported.supplies.filter(
-						(s) => !existingSupplyIds.has(s.id),
-					);
-					db.supplies.push(...newSupplies);
-				}
+			// Only for backups
+			if (imported.supplies) {
+				const existingSupplyIds = new Set(db.supplies.map((s) => s.id));
+				const newSupplies = imported.supplies.filter(
+					(s) => !existingSupplyIds.has(s.id),
+				);
+				db.supplies.push(...newSupplies);
 			}
 
 			saveToStorage();
@@ -900,6 +953,8 @@ function handleImport(file) {
 // Exporting data
 function exportData() {
 	if (checkPremiumStatus()) {
+		saveToStorage();
+
 		const downloadAnchorNode = document.createElement("a");
 
 		downloadAnchorNode.setAttribute(
@@ -958,6 +1013,7 @@ function exportDataForSely() {
 function loadFromStorage() {
 	const stored = localStorage.getItem("stox_db");
 	const defaultDB = {
+		app: "STOX",
 		products: [],
 		sales: [],
 		supplies: [],
