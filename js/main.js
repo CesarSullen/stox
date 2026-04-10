@@ -665,7 +665,7 @@ function renderTicket() {
                     <div class="ticket-item-actions">
                         <strong>$${item.total.toFixed(2)}</strong>
                         <button class="btn-remove" onclick="removeFromTicket(${index})" type="button">
-                            <img src="../assets/icons/x-circle-fill.svg" class="icon-remove">
+                            <img src="./assets/icons/x-circle-fill.svg" class="icon-remove">
                         </button>
                     </div>
                 </div>

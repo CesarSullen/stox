@@ -1,4 +1,4 @@
-const CACHE_NAME = "stox-v1.6.0swsss";
+const CACHE_NAME = "stox-v1.6.1";
 const STATIC_ASSETS = [
 	// Page
 	"./",
