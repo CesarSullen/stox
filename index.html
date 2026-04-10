@@ -119,7 +119,7 @@
 						</div>
 						<div id="filter-menu" class="filter-menu">
 							<div class="filter-option" onclick="applyFilter('all')">Todo</div>
-							<div class="filter-option" onclick="applyFilter('purchase')">
+							<div class="filter-option" onclick="applyFilter('supply')">
 								Compras
 							</div>
 							<div class="filter-option" onclick="applyFilter('sale')">
@@ -299,7 +299,7 @@
 						/>
 					</div>
 
-					<span class="version-badge">v1.5.2</span>
+					<span class="version-badge">v1.6.0</span>
 
 					<div class="legal-links">
 						<a
@@ -345,41 +345,62 @@
 						<img src="./assets/icons/x-circle.svg" />
 					</button>
 				</div>
-				<form id="form-sale" onsubmit="handleSaleSubmit(event)">
+
+				<div id="sale-input-section">
 					<div class="form-group">
 						<label>Producto</label>
-						<select
-							id="sale-product-select"
-							class="form-input"
-							required
-						></select>
+						<select id="sale-product-select" class="form-input"></select>
 					</div>
-					<div class="form-group">
-						<label>Cantidad</label>
-						<input
-							type="number"
-							id="sale-quantity"
-							class="form-input"
-							min="1"
-							value="1"
-							required
-						/>
+					<div class="form-row">
+						<div class="form-group">
+							<label>Cantidad</label>
+							<input
+								type="number"
+								id="sale-quantity"
+								class="form-input"
+								min="1"
+								value="1"
+								oninput="renderTicket()"
+							/>
+						</div>
+						<div class="form-group">
+							<label>Precio (u)</label>
+							<input
+								type="number"
+								id="sale-price"
+								class="form-input"
+								placeholder="0.00"
+								step="0.01"
+								oninput="renderTicket()"
+							/>
+						</div>
 					</div>
-					<div class="form-group">
-						<label>Precio de Venta (unidad)</label>
-						<input
-							type="number"
-							id="sale-price"
-							class="form-input"
-							step="0.01"
-							placeholder="0.00"
-							required
-						/>
+					<button type="button" class="btn-ghost" onclick="addToTicket()">
+						Añadir al Ticket
+					</button>
+				</div>
+
+				<div id="ticket-section" class="ticket-section">
+					<div id="ticket-items-container" class="ticket-list"></div>
+					<div class="ticket-footer">
+						<div class="ticket-total">
+							<span>TOTAL A COBRAR:</span>
+							<strong id="ticket-total-amount" class="ticket-total-amount"
+								>$0.00</strong
+							>
+						</div>
 					</div>
-					<div class="modal-actions">
-						<button type="submit" class="btn-confirm">Confirmar Venta</button>
-					</div>
-				</form>
+				</div>
+
+				<div class="modal-actions">
+					<button
+						type="button"
+						class="btn-confirm"
+						onclick="handleSaleSubmit()"
+					>
+						Confirmar Venta
+					</button>
+				</div>
 			</div>
 		</div>
 

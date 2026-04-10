@@ -310,6 +310,7 @@ img {
 
 .form-group {
 	margin-bottom: 1rem;
+	flex: 1;
 }
 
 .form-group label {
@@ -318,6 +319,11 @@ img {
 	color: var(--text-muted);
 	margin-block: 0.15rem;
 	text-transform: uppercase;
+}
+
+.form-row {
+	display: flex;
+	gap: 10px;
 }
 
 .form-input {
@@ -359,10 +365,22 @@ input[list]::-webkit-calendar-picker-indicator {
 
 .btn-confirm {
 	width: 100%;
-	padding: 1rem;
+	padding: 0.8rem;
 	background: var(--accent);
+	border: solid 2px var(--accent);
 	color: black;
-	border: none;
+	border-radius: 16px;
+	font-weight: 600;
+	font-size: 1.2rem;
+	cursor: pointer;
+}
+
+.btn-ghost {
+	width: 100%;
+	padding: 0.8rem;
+	background: transparent;
+	color: var(--accent);
+	border: solid 2px var(--accent);
 	border-radius: 16px;
 	font-weight: 600;
 	font-size: 1.2rem;
@@ -384,6 +402,70 @@ input[list]::-webkit-calendar-picker-indicator {
 .btn-delete:hover {
 	background: var(--alert);
 	color: white;
+}
+
+.ticket-section {
+	margin-block: 20px;
+	padding-block: 20px;
+	border-top: 1px dashed var(--text-muted);
+}
+
+.ticket-list {
+	max-height: 150px;
+	overflow-y: auto;
+	background: hsla(0, 0%, 0%, 0.6);
+	padding: 10px;
+	border-radius: 8px;
+	margin-bottom: 15px;
+}
+
+.ticket-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1px solid var(--text-muted);
+	white-space: nowrap;
+}
+
+.ticket-item:last-child {
+	border-bottom: none;
+}
+
+.ticket-item-info {
+	max-width: 70%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.ticket-total {
+	display: flex;
+	justify-content: space-between;
+	font-size: 1.1rem;
+	padding-top: 5px;
+	border-top: 1px dashed var(--text-muted);
+}
+
+.ticket-total-amount {
+	color: var(--accent);
+}
+
+.ticket-item-actions {
+	display: flex;
+	gap: 2px;
+}
+
+.btn-remove {
+	background: none;
+	border: none;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+}
+
+.icon-remove {
+	width: 24px;
+	height: 24px;
+	display: block;
 }
 
 .premium-features {
@@ -675,6 +757,7 @@ input[list]::-webkit-calendar-picker-indicator {
 	transform: translateY(-10px);
 	transition: all 0.1s ease-out;
 }
+
 .filter-menu.active {
 	opacity: 1;
 	pointer-events: auto;
@@ -697,7 +780,6 @@ input[list]::-webkit-calendar-picker-indicator {
 	gap: 1rem;
 	padding: 1rem;
 	border-radius: 20px;
-
 	background: hsla(0, 0%, 20%, 0.5);
 	border: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -708,6 +790,7 @@ input[list]::-webkit-calendar-picker-indicator {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	align-self: flex-start;
 }
 
 .timeline-icon img {
@@ -740,17 +823,28 @@ input[list]::-webkit-calendar-picker-indicator {
 	color: var(--alert);
 }
 
-.timeline-extra-info {
-	margin-top: 4px;
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
+.timeline-info-box {
+	margin: 8px 0;
+	padding: 10px;
+	background: rgba(255, 255, 255, 0.06);
+	border-radius: 10px;
+	border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.timeline-sub-text {
-	font-size: 0.7rem;
+.timeline-info-row {
+	display: flex;
+	justify-content: space-between;
+	font-size: 0.75rem;
+	padding: 3px 0;
 	color: var(--text-muted);
-	display: block;
+}
+
+.timeline-info-row span:last-child {
+	font-weight: 600;
+}
+
+.timeline-main {
+	align-items: center;
 }
 
 .stats-filters {

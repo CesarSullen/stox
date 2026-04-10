@@ -189,21 +189,49 @@ function renderHistory() {
 	const timeline = document.getElementById("unified-timeline");
 	timeline.innerHTML = "";
 
-	let allEvents = [...db.sales, ...db.supplies];
+	const groupedEvents = [];
+	const tickets = {};
 
+	db.sales.forEach((sale) => {
+		if (sale.ticket_id) {
+			if (!tickets[sale.ticket_id]) {
+				tickets[sale.ticket_id] = {
+					type: "ticket",
+					ticket_id: sale.ticket_id,
+					date: sale.date,
+					items: [],
+					total: 0,
+				};
+				groupedEvents.push(tickets[sale.ticket_id]);
+			}
+			tickets[sale.ticket_id].items.push(sale);
+			tickets[sale.ticket_id].total += sale.total;
+		} else {
+			groupedEvents.push({ ...sale, type: "sale" });
+		}
+	});
+
+	db.supplies.forEach((sup) => {
+		groupedEvents.push({ ...sup, type: "supply" });
+	});
+
+	let filteredEvents = groupedEvents;
 	if (historyFilter !== "all") {
-		allEvents = allEvents.filter((event) => event.type === historyFilter);
+		filteredEvents = groupedEvents.filter((e) => {
+			if (historyFilter === "sale")
+				return e.type === "sale" || e.type === "ticket";
+			return e.type === historyFilter;
+		});
 	}
 
-	allEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
+	filteredEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-	if (allEvents.length === 0) {
+	if (filteredEvents.length === 0) {
 		timeline.innerHTML = '<p class="no-results">Sin registros que mostrar</p>';
 		return;
 	}
 
-	allEvents.forEach((event) => {
-		const isSale = event.type === "sale";
+	filteredEvents.forEach((event) => {
 		const date = new Date(event.date).toLocaleDateString("es-ES", {
 			day: "2-digit",
 			month: "short",
@@ -211,39 +239,76 @@ function renderHistory() {
 			minute: "2-digit",
 		});
 
-		let extraInfo = "";
-		if (!isSale) {
-			const realUnit = event.cost_unit.toFixed(2);
-			const transportText =
-				event.transport_cost > 0
-					? `<span class="timeline-sub-text">Precio de Transporte: +$${event.transport_cost.toFixed(2)}/u</span>`
-					: "";
+		let contentHtml = "";
+		let icon =
+			event.type === "supply" ? "arrow-circle-down.svg" : "arrow-circle-up.svg";
+		let amountClass = event.type === "supply" ? "type-supply" : "type-sale";
+		let symbol = event.type === "supply" ? "-" : "+";
+		let totalDisplay = 0;
 
-			extraInfo = `
-                <div class="timeline-extra-info">
-                    <span class="timeline-sub-text">Precio de Compra: $${realUnit}/u</span>
-                    ${transportText}
+		if (event.type === "ticket") {
+			totalDisplay = event.total;
+			const itemsHtml = event.items
+				.map(
+					(item) => `
+                <div class="timeline-info-row">
+                    <span>${item.product_name} x${item.quantity}</span>
+                    <span>$${item.total.toFixed(2)}</span>
                 </div>
+            `,
+				)
+				.join("");
+
+			contentHtml = `
+                <div class="timeline-main">
+                    <strong>Ticket de Venta</strong>
+                    <span>${event.items.length} ítems</span>
+                </div>
+                <div class="timeline-info-box">
+                    ${itemsHtml}
+                </div>
+            `;
+		} else {
+			totalDisplay = event.type === "supply" ? event.total_cost : event.total;
+			let innerBox = "";
+
+			if (event.type === "supply") {
+				innerBox = `
+                    <div class="timeline-info-box">
+                        <div class="timeline-info-row">
+                            <span>Costo Unitario</span>
+                            <span>$${event.cost_unit.toFixed(2)}</span>
+                        </div>
+                        ${
+													event.transport_cost > 0
+														? `
+                        <div class="timeline-info-row">
+                            <span>Transporte</span>
+                            <span>+$${event.transport_cost.toFixed(2)}</span>
+                        </div>`
+														: ""
+												}
+                    </div>`;
+			}
+
+			contentHtml = `
+                <div class="timeline-main">
+                    <strong>${event.product_name}</strong>
+                    <span>${event.quantity} u</span>
+                </div>
+                ${innerBox}
             `;
 		}
 
 		const html = `
             <div class="timeline-item">
                 <div class="timeline-icon">
-                    <img src="./assets/icons/${isSale ? "arrow-circle-up.svg" : "arrow-circle-down.svg"}">
+                    <img src="./assets/icons/${icon}">
                 </div>
                 <div class="timeline-item-content">
-                    <div class="timeline-main">
-                        <div>
-                            <strong>${event.product_name}</strong>
-                            ${extraInfo}
-                        </div>
-                        <span>${event.quantity} u</span>
-                    </div>
+                    ${contentHtml}
                     <div class="timeline-details">
-                        <strong class="timeline-amount ${isSale ? "type-sale" : "type-supply"}">
-                            ${isSale ? "+" : "-"}$${(isSale ? event.total : event.total_cost).toFixed(2)}
-                        </strong>
+                        <strong class="timeline-amount ${amountClass}">${symbol}$${totalDisplay.toFixed(2)}</strong>
                         <span class="timeline-date">${date}</span>
                     </div>
                 </div>
@@ -274,8 +339,10 @@ function applyFilter(filter) {
 	historyFilter = filter;
 
 	const pill = document.getElementById("filter-pill");
-	const labels = { all: "Todo", purchase: "Compras", sale: "Ventas" };
-	pill.textContent = labels[filter];
+
+	const labels = { all: "Todo", supply: "Compras", sale: "Ventas" };
+
+	pill.textContent = labels[historyFilter] || "Todo";
 
 	toggleFilterMenu();
 	renderHistory();
@@ -524,34 +591,133 @@ function closeModal(modalId) {
 	}
 }
 
-function openSaleModal() {
-	const select = document.getElementById("sale-product-select");
+let tempTicket = [];
 
+function openSaleModal() {
+	tempTicket = [];
+	renderTicket();
+
+	const select = document.getElementById("sale-product-select");
 	select.innerHTML =
 		'<option value="" disabled selected>Selecciona un producto</option>';
 
 	db.products.forEach((product) => {
 		const option = document.createElement("option");
 		option.value = product.id;
-		option.textContent = `${product.name} ($${product.price})`;
+		option.textContent = `${product.name} (Stock: ${product.stock})`;
 		select.appendChild(option);
 	});
+
+	select.onchange = (e) => {
+		const prod = db.products.find((p) => p.id === e.target.value);
+		if (prod) document.getElementById("sale-price").value = prod.price;
+		renderTicket();
+	};
 
 	document.getElementById("modal-sale").classList.add("active");
 }
 
-function handleSaleSubmit(event) {
-	event.preventDefault();
-
-	const productId = document.getElementById("sale-product-select").value.trim();
-	const quantityToSell = parseInt(
-		document.getElementById("sale-quantity").value,
-	);
-	const priceAtSale = parseFloat(document.getElementById("sale-price").value);
+function addToTicket() {
+	const productId = document.getElementById("sale-product-select").value;
+	const quantity = parseInt(document.getElementById("sale-quantity").value);
+	const price = parseFloat(document.getElementById("sale-price").value);
 	const product = db.products.find((p) => p.id === productId);
 
-	if (product && product.stock >= quantityToSell) {
-		let remaining = quantityToSell;
+	if (!product || isNaN(quantity) || isNaN(price) || quantity <= 0) {
+		return alert("Por favor, completa los campos correctamente.");
+	}
+
+	if (quantity > product.stock) {
+		return alert(`Stock insuficiente. Disponible: ${product.stock}`);
+	}
+
+	tempTicket.push({
+		id: product.id,
+		name: product.name,
+		quantity: quantity,
+		price: price,
+		total: quantity * price,
+	});
+
+	document.getElementById("sale-product-select").value = "";
+	document.getElementById("sale-quantity").value = 1;
+	document.getElementById("sale-price").value = "";
+
+	renderTicket();
+}
+
+function renderTicket() {
+	const container = document.getElementById("ticket-items-container");
+	const totalDisplay = document.getElementById("ticket-total-amount");
+
+	container.innerHTML = "<h3>Ticket de Venta</h3>";
+	let grandTotal = 0;
+
+	if (tempTicket.length > 0) {
+		tempTicket.forEach((item, index) => {
+			grandTotal += item.total;
+			container.innerHTML += `
+                <div class="ticket-item">
+                    <div class="ticket-item-info">
+                        <strong>${item.name}</strong><br>
+                        <small>${item.quantity} x $${item.price.toFixed(2)}</small>
+                    </div>
+                    <div class="ticket-item-actions">
+                        <strong>$${item.total.toFixed(2)}</strong>
+                        <button class="btn-remove" onclick="removeFromTicket(${index})" type="button">
+                            <img src="../assets/icons/x-circle-fill.svg" class="icon-remove">
+                        </button>
+                    </div>
+                </div>
+            `;
+		});
+	} else {
+		const qty = parseInt(document.getElementById("sale-quantity").value) || 0;
+		const price = parseFloat(document.getElementById("sale-price").value) || 0;
+
+		if (document.getElementById("sale-product-select").value) {
+			grandTotal = qty * price;
+		}
+	}
+
+	totalDisplay.textContent = `$${grandTotal.toFixed(2)}`;
+}
+
+function removeFromTicket(index) {
+	tempTicket.splice(index, 1);
+	renderTicket();
+}
+
+function handleSaleSubmit() {
+	const productId = document.getElementById("sale-product-select").value;
+	const quantity = parseInt(document.getElementById("sale-quantity").value);
+	const price = parseFloat(document.getElementById("sale-price").value);
+
+	if (
+		tempTicket.length === 0 &&
+		productId &&
+		!isNaN(quantity) &&
+		!isNaN(price)
+	) {
+		const product = db.products.find((p) => p.id === productId);
+		if (product && quantity <= product.stock) {
+			tempTicket.push({
+				id: product.id,
+				name: product.name,
+				quantity: quantity,
+				price: price,
+				total: quantity * price,
+			});
+		}
+	}
+
+	if (tempTicket.length === 0) return alert("El ticket está vacío.");
+
+	const saleGroupId = tempTicket.length > 1 ? `ticket-${Date.now()}` : null;
+
+	tempTicket.forEach((item) => {
+		const product = db.products.find((p) => p.id === item.id);
+		let remaining = item.quantity;
 		let totalCostOfSale = 0;
 
 		if (!product.batches || product.batches.length === 0) {
@@ -562,7 +728,6 @@ function handleSaleSubmit(event) {
 
 		while (remaining > 0 && product.batches.length > 0) {
 			let batch = product.batches[0];
-
 			if (batch.quantity <= remaining) {
 				totalCostOfSale += batch.quantity * batch.cost;
 				remaining -= batch.quantity;
@@ -574,30 +739,27 @@ function handleSaleSubmit(event) {
 			}
 		}
 
-		product.stock -= quantityToSell;
-		product.price = priceAtSale;
+		product.stock -= item.quantity;
+		product.price = item.price;
 
 		db.sales.push({
-			id: `sale-${Date.now()}`,
+			id: `sale-${Date.now()}-${Math.random()}`,
+			ticket_id: saleGroupId, // Null if it's only one product
 			product_id: product.id,
 			product_name: product.name,
-			quantity: quantityToSell,
-			price_at_sale: priceAtSale,
-			total: priceAtSale * quantityToSell,
+			quantity: item.quantity,
+			price_at_sale: item.price,
+			total: item.total,
 			acquisition_cost_total: totalCostOfSale,
 			date: new Date().toISOString(),
 			type: "sale",
 		});
+	});
 
-		saveToStorage();
-		renderDashboard();
-		closeModal("modal-sale");
-		alert(
-			"Venta registrada con éxito.\nEl precio del producto ha sido actualizado.",
-		);
-	} else {
-		alert("Cantidad insuficiente en el inventario o producto no encontrado.");
-	}
+	saveToStorage();
+	renderDashboard();
+	closeModal("modal-sale");
+	alert("Venta registrada con éxito.");
 }
 
 // Update sale price at selling
