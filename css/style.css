@@ -405,17 +405,22 @@ input[list]::-webkit-calendar-picker-indicator {
 }
 
 .ticket-section {
-	margin-block: 20px;
-	padding-block: 20px;
-	border-top: 1px dashed var(--text-muted);
+	margin-block: 1rem;
 }
 
 .ticket-list {
-	max-height: 150px;
+	max-height: 0px;
 	overflow-y: auto;
 	background: hsla(0, 0%, 0%, 0.6);
 	padding: 10px;
 	border-radius: 8px;
+	margin-bottom: 0px;
+	opacity: 0;
+}
+
+.ticket-list.active {
+	opacity: 1;
+	max-height: 150px;
 	margin-bottom: 15px;
 }
 

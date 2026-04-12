@@ -1,4 +1,4 @@
-const CACHE_NAME = "stox-v1.6.1";
+const CACHE_NAME = "stox-v1.6.2";
 const STATIC_ASSETS = [
 	// Page
 	"./",
@@ -72,7 +72,7 @@ self.addEventListener("fetch", (event) => {
 		event.request.method === "POST" &&
 		event.request.url.includes("index.html")
 	) {
-		event.respondWith(Response.redirect("./index.html?share=true", 303));
+		event.respondWith(Response.redirect("./index.html", 303));
 		return;
 	}
 
