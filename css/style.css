@@ -39,7 +39,7 @@ body {
 	color: hsl(0, 0%, 100%);
 	min-height: 100vh;
 	overflow-x: hidden;
-	max-width: 500px;
+	max-width: 768px;
 	margin: 0 auto;
 	padding: 1.5rem;
 	overscroll-behavior-y: contain;
@@ -97,34 +97,14 @@ img {
 	width: 100%;
 	padding-top: 1.5rem;
 	padding-bottom: 8rem;
+
+	display: none;
+	opacity: 0;
 }
+
 .view.active {
 	display: block;
-	animation: viewEntering 0.15s forwards;
-}
-.view:not(.active) {
-	display: none;
-	animation: viewExiting 0.15s forwards;
-}
-
-@keyframes viewEntering {
-	0% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
-}
-
-@keyframes viewExiting {
-	0% {
-		display: block;
-		opacity: 1;
-	}
-	100% {
-		display: none;
-		opacity: 0;
-	}
+	opacity: 1;
 }
 
 .quick-actions {
