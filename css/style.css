@@ -44,6 +44,9 @@ body {
 	padding: 1.5rem;
 	overscroll-behavior-y: contain;
 }
+body.modal-open {
+	overflow-y: hidden;
+}
 
 html,
 body {
