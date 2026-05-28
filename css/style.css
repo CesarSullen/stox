@@ -185,6 +185,56 @@ img {
 	color: var(--accent);
 }
 
+.daily-summary-select option {
+	background: #1a1a1a;
+	color: white;
+}
+
+.daily-summary-totals {
+	margin-block: 1.2rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+}
+
+.daily-summary-totals strong {
+	color: var(--accent);
+}
+
+.daily-pos-group {
+	margin-bottom: 1.2rem;
+}
+
+.daily-pos-group:last-child {
+	margin-bottom: 0;
+}
+
+.daily-pos-label {
+	font-size: 1.1rem;
+	font-weight: 600;
+	letter-spacing: 0.6px;
+	text-transform: uppercase;
+	color: var(--accent);
+	margin-bottom: 0.2rem;
+}
+
+.daily-product-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.5rem 0;
+	border-bottom: 1px solid hsla(0, 0%, 100%, 0.05);
+	font-size: 0.9rem;
+}
+
+.daily-product-item:last-child {
+	border-bottom: none;
+}
+
+.daily-product-item strong {
+	color: var(--accent);
+}
+
 .bottom-nav {
 	position: fixed;
 	bottom: 20px;

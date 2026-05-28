@@ -1,4 +1,4 @@
-const CACHE_NAME = "stox-v1.7.3";
+const CACHE_NAME = "stox-v1.7.4";
 const STATIC_ASSETS = [
 	// Page
 	"./",
@@ -15,6 +15,7 @@ const STATIC_ASSETS = [
 	// UI Icons
 	"./assets/icons/arrow-circle-down.svg",
 	"./assets/icons/arrow-circle-up.svg",
+	"./assets/icons/calendar-check-duotone.svg",
 	"./assets/icons/chart-line-up-duotone.svg",
 	"./assets/icons/chart-pie-slice.svg",
 	"./assets/icons/check-circle-fill.svg",
