@@ -762,6 +762,47 @@ input[list]::-webkit-calendar-picker-indicator {
 	background: rgba(255, 255, 255, 0.1);
 }
 
+.pos-filter-row {
+	display: flex;
+	gap: 8px;
+	overflow-x: auto;
+	padding: 4px 0 10px;
+	scrollbar-width: none;
+	mask-image: linear-gradient(
+		to right,
+		transparent 0%,
+		black 5%,
+		black 95%,
+		transparent 100%
+	);
+	-webkit-mask-image: linear-gradient(
+		to right,
+		transparent 0%,
+		black 5%,
+		black 95%,
+		transparent 100%
+	);
+}
+
+.pos-filter-row::-webkit-scrollbar {
+	display: none;
+}
+
+.pos-pill {
+	background: hsla(0, 0%, 100%, 0.08);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	padding: 6px 14px;
+	border-radius: 500px;
+	font-size: 0.85rem;
+	white-space: nowrap;
+	cursor: pointer;
+}
+.pos-pill.active {
+	background: hsl(0, 0%, 100%);
+	border-color: hsl(0, 0%, 100%);
+	color: hsl(0, 0%, 0%);
+	font-weight: 600;
+}
 .timeline-item {
 	display: flex;
 	align-items: center;
@@ -817,6 +858,12 @@ input[list]::-webkit-calendar-picker-indicator {
 	background: rgba(255, 255, 255, 0.06);
 	border-radius: 10px;
 	border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.timeline-pos-name span {
+	font-weight: 600;
+	color: var(--accent);
+	margin-bottom: 4px;
 }
 
 .timeline-info-row {
