@@ -1111,7 +1111,6 @@ input[list]::-webkit-calendar-picker-indicator {
 
 .settings-card h3 {
 	font-size: 1.3rem;
-	margin-bottom: 1rem;
 }
 
 .setting-help {
@@ -1126,6 +1125,7 @@ input[list]::-webkit-calendar-picker-indicator {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	margin-bottom: 1rem;
 }
 
 .add-category-btn {
@@ -1219,4 +1219,55 @@ input[list]::-webkit-calendar-picker-indicator {
 	font-size: 0.8rem;
 	color: #444;
 	margin-top: 1rem;
+}
+
+.toggle-switch {
+	position: relative;
+	display: inline-block;
+	width: 48px;
+	height: 26px;
+	flex-shrink: 0;
+}
+
+.toggle-switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.toggle-slider {
+	position: absolute;
+	cursor: pointer;
+	inset: 0;
+	background: hsla(0, 0%, 100%, 0.1);
+	border-radius: 500px;
+	transition: 0.2s;
+}
+
+.toggle-slider::before {
+	content: "";
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	left: 3px;
+	bottom: 3px;
+	background: white;
+	border-radius: 50%;
+	transition: 0.2s;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+	background: var(--accent);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+	transform: translateX(22px);
+}
+
+.cloud-link-code {
+	font-size: 1.4rem;
+	font-weight: 700;
+	letter-spacing: 2px;
+	color: var(--accent);
+	margin: 0.5rem 0;
 }

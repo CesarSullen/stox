@@ -251,7 +251,7 @@
 				</div>
 
 				<div class="settings-card">
-					<h3>Inventario</h3>
+					<h3 class="card-header-actions">Inventario</h3>
 					<div class="form-group">
 						<label>Umbral de Stock Crítico</label>
 						<input
@@ -279,7 +279,27 @@
 				</div>
 
 				<div class="settings-card">
-					<h3>Datos</h3>
+					<div class="card-header-actions">
+						<h3>Sincronización en la Nube</h3>
+
+						<label class="toggle-switch">
+							<input
+								type="checkbox"
+								id="cloud-toggle"
+								onchange="handleCloudToggle(this.checked)"
+							/>
+							<span class="toggle-slider"></span>
+						</label>
+					</div>
+					<p class="setting-help">
+						Guarde una copia de seguridad de sus datos y sincronice las ventas
+						con sus dependientes.
+					</p>
+					<div id="cloud-info"></div>
+				</div>
+
+				<div class="settings-card">
+					<h3 class="card-header-actions">Datos</h3>
 					<div class="settings-actions">
 						<button class="primary-btn" onclick="exportData()">
 							<img src="./assets/icons/file-arrow-up.svg" /> Backup
@@ -317,7 +337,7 @@
 						/>
 					</div>
 
-					<span class="version-badge">v1.7.4</span>
+					<span class="version-badge">v1.8.0</span>
 
 					<div class="legal-links">
 						<a href="https://cesarsullen.github.io/links" target="_blank"
@@ -584,18 +604,16 @@
 					<li>Exportación de datos</li>
 					<li>Estadísticas detalladas</li>
 					<li>App para dependientes</li>
+					<li>Acceso a la nube</li>
 				</ul>
 
 				<div class="pricing-container">
 					<div class="pricing-options">
 						<div class="price-item">
-							<span>Saldo:</span> <strong>250 CUP</strong>
+							<span>Premium:</span> <strong>5000 CUP/año</strong>
 						</div>
 						<div class="price-item">
-							<span>Efectivo:</span> <strong>300 CUP</strong>
-						</div>
-						<div class="price-item">
-							<span>Transf.:</span> <strong>350 CUP</strong>
+							<span>Nube (opcional):</span> <strong>500 CUP/mes</strong>
 						</div>
 					</div>
 				</div>
@@ -620,6 +638,59 @@
 					class="contact-link"
 				>
 					¿No tienes código? Click aquí.
+				</a>
+			</div>
+		</div>
+
+		<div id="modal-cloud-login" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2>Acceso a la Nube</h2>
+					<button
+						class="modal-header-btn"
+						onclick="
+							closeModal('modal-cloud-login');
+							document.getElementById('cloud-toggle').checked = false;
+						"
+					>
+						<img src="./assets/icons/x-circle.svg" />
+					</button>
+				</div>
+				<div class="form-group">
+					<label>Usuario</label>
+					<input
+						type="text"
+						id="cloud-username"
+						class="form-input"
+						placeholder="Nombre de tu negocio"
+						autocomplete="off"
+					/>
+				</div>
+				<div class="form-group">
+					<label>Contraseña</label>
+					<input
+						type="password"
+						id="cloud-password"
+						class="form-input"
+						placeholder="••••••••"
+						autocomplete="off"
+					/>
+				</div>
+				<div class="modal-actions">
+					<button
+						type="button"
+						class="btn-confirm"
+						onclick="submitCloudLogin()"
+					>
+						Conectar
+					</button>
+				</div>
+				<a
+					href="https://wa.me/5351643954?text=Hola, quiero contratar la sincronización en la nube para STOX."
+					target="_blank"
+					class="contact-link"
+				>
+					¿No tienes cuenta? Click aquí.
 				</a>
 			</div>
 		</div>
