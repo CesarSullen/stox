@@ -291,7 +291,7 @@
 							<span class="toggle-slider"></span>
 						</label>
 					</div>
-					<p class="setting-help">
+					<p>
 						Guarde una copia de seguridad de sus datos y sincronice las ventas
 						con sus dependientes.
 					</p>
@@ -299,7 +299,7 @@
 				</div>
 
 				<div class="settings-card">
-					<h3 class="card-header-actions">Datos</h3>
+					<h3 class="card-header-actions">Datos Locales</h3>
 					<div class="settings-actions">
 						<button class="primary-btn" onclick="exportData()">
 							<img src="./assets/icons/file-arrow-up.svg" /> Backup
@@ -323,12 +323,23 @@
 						<button class="primary-btn" onclick="exportDataForSely()">
 							<img src="./assets/icons/export.svg" /> Enviar a SELY
 						</button>
-						<button class="btn-delete" onclick="clearDatabase()">
-							Borrar todos los datos
-						</button>
 					</div>
 				</div>
 
+				<div class="settings-card">
+					<h3 class="card-header-actions">Zona de Peligro</h3>
+					<p>
+						Borra permanentemente el inventario local y el historial de ventas.
+					</p>
+					<div class="settings-actions" style="margin-top: 1rem">
+						<button class="btn-delete" onclick="clearDatabase()">
+							Borrar todos los datos
+						</button>
+						<button class="btn-delete" onclick="deleteCloudAccount()">
+							Eliminar cuenta
+						</button>
+					</div>
+				</div>
 				<div class="settings-card">
 					<div class="companies-logos">
 						<img
@@ -337,7 +348,7 @@
 						/>
 					</div>
 
-					<span class="version-badge">v1.8.0</span>
+					<span class="version-badge">v1.9.0</span>
 
 					<div class="legal-links">
 						<a href="https://cesarsullen.github.io/links" target="_blank"
