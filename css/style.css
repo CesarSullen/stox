@@ -29,9 +29,9 @@
 }
 
 :root {
-	--accent: hsl(142, 69%, 58%);
-	--alert: hsl(0, 100%, 65%);
-	--text-muted: hsl(0, 0%, 50%);
+	--accent: #4ade80;
+	--alert: #ff4d4d;
+	--text-muted: #808080;
 }
 
 body {
@@ -626,7 +626,7 @@ input[list]::-webkit-calendar-picker-indicator {
 	overflow-x: auto;
 	padding: 10px 0;
 	scrollbar-width: none;
-
+	height: 60px;
 	mask-image: linear-gradient(
 		to right,
 		transparent 0%,
@@ -649,6 +649,7 @@ input[list]::-webkit-calendar-picker-indicator {
 .category-pill {
 	background: hsla(0, 0%, 100%, 0.1);
 	padding: 8px 16px;
+	height: auto;
 	border-radius: 500px;
 	display: flex;
 	align-items: center;
@@ -668,6 +669,18 @@ input[list]::-webkit-calendar-picker-indicator {
 .category-pill.low-stock-pill.active {
 	background-color: hsl(38, 92%, 50%);
 	color: hsl(0, 0%, 0%);
+}
+
+.category-pill-add {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	height: 100%;
+	aspect-ratio: 1;
+	border-radius: 50%;
+	background: hsla(0, 0%, 100%, 0.1);
+	flex-shrink: 0;
 }
 
 .inventory-list {
@@ -1270,4 +1283,22 @@ input[list]::-webkit-calendar-picker-indicator {
 	letter-spacing: 2px;
 	color: var(--accent);
 	margin: 0.5rem 0;
+}
+
+.load-all-btn {
+	width: 100%;
+	background: transparent;
+	border: 1px solid hsla(0, 0%, 100%, 0.1);
+	border-radius: 12px;
+	color: var(--text-muted);
+	font-size: 0.85rem;
+	padding: 0.8rem;
+	margin-top: 1rem;
+	cursor: pointer;
+}
+
+.sync-timestamp {
+	font-size: 0.8rem;
+	color: var(--text-muted);
+	margin-top: 0.5rem;
 }

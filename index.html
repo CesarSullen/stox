@@ -42,7 +42,7 @@
 				<div class="quick-actions">
 					<div class="action-card" onclick="openSupplyModal()">
 						<div class="action-card-icon">
-							<img src="./assets/icons/plus-circle.svg" />
+							<img src="./assets/icons/plus.svg" />
 						</div>
 						<h3>Comprar</h3>
 					</div>
@@ -348,11 +348,14 @@
 						/>
 					</div>
 
-					<span class="version-badge">v1.9.1</span>
+					<span class="version-badge">v1.9.2</span>
 
 					<div class="legal-links">
 						<a href="https://cesarsullen.github.io/links" target="_blank"
 							>Desarrollado por <strong>Saru</strong></a
+						>
+						<a href="https://cesarsullen.github.io/views/donations"
+							>Apoyar el proyecto</a
 						>
 						<a
 							href="https://wa.me/5351643954?text=Hola. Me gustaría informar de un problema en STOX."
@@ -500,17 +503,31 @@
 							required
 						/>
 					</div>
-					<div class="form-group">
-						<label>Precio de Compra (unidad)</label>
-						<input
-							type="number"
-							id="supply-cost"
-							class="form-input"
-							min="0"
-							placeholder="0.00"
-							step="0.01"
-							required
-						/>
+					<div class="form-row">
+						<div class="form-group">
+							<label>P. Compra (u)</label>
+							<input
+								type="number"
+								id="supply-cost"
+								class="form-input"
+								min="0"
+								placeholder="0.00"
+								step="0.01"
+								required
+								oninput="updateSuggestedPrice()"
+							/>
+						</div>
+						<div class="form-group">
+							<label>P. Venta (u)</label>
+							<input
+								type="number"
+								id="supply-suggested-price"
+								class="form-input"
+								min="0"
+								placeholder="0.00"
+								step="0.01"
+							/>
+						</div>
 					</div>
 					<div class="form-group">
 						<label>Costo Transportación (unidad)</label>
@@ -520,6 +537,7 @@
 							class="form-input"
 							placeholder="Por defecto es $0.00"
 							step="0.01"
+							oninput="updateSuggestedPrice()"
 						/>
 					</div>
 					<div class="modal-actions">
