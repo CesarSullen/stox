@@ -423,9 +423,9 @@ input[list]::-webkit-calendar-picker-indicator {
 .btn-delete {
 	width: 100%;
 	padding: 0.8rem;
-	background: transparent;
-	color: var(--alert);
+	background: hsla(0, 70%, 45%, 0.2);
 	border: 1px solid var(--alert);
+	color: var(--alert);
 	border-radius: 16px;
 	font-weight: 600;
 	font-size: 1.2rem;
@@ -1301,4 +1301,126 @@ input[list]::-webkit-calendar-picker-indicator {
 	font-size: 0.8rem;
 	color: var(--text-muted);
 	margin-top: 0.5rem;
+}
+
+#toast-container {
+	position: fixed;
+	top: 80px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 9999;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	pointer-events: none;
+}
+
+.toast {
+	background: hsla(0, 0%, 18%, 0.97);
+	border: 1px solid hsla(0, 0%, 100%, 0.1);
+	border-radius: 12px;
+	padding: 0.65rem 1.2rem;
+	font-size: 0.88rem;
+	color: white;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+	opacity: 0;
+	transform: translateY(-10px);
+	pointer-events: none;
+	max-width: 95dvw;
+	text-align: center;
+}
+
+.toast.toast-visible {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.toast.toast-success {
+	border-color: var(--accent);
+}
+
+.toast.toast-error {
+	border-color: var(--alert);
+}
+
+#modal-ui {
+	opacity: 0;
+	pointer-events: none;
+	position: fixed;
+	z-index: 1000;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1.5rem;
+	background-color: hsla(0, 0%, 0%, 0.8);
+	backdrop-filter: blur(8px);
+}
+
+#modal-ui.active {
+	opacity: 1;
+	pointer-events: all;
+}
+
+.modal-ui-box {
+	background: #1a1a1a;
+	border: 1px solid hsla(0, 0%, 100%, 0.1);
+	border-radius: 18px;
+	padding: 1.5rem;
+	width: 100%;
+	max-width: 340px;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.modal-ui-message {
+	font-size: 0.95rem;
+	color: white;
+	line-height: 1.5;
+	white-space: pre-line;
+}
+
+.modal-ui-input {
+	width: 100%;
+	padding: 1rem;
+	border: none;
+	border-radius: 12px;
+	color: white;
+	font-size: 1.1rem;
+	background: hsla(0, 0%, 0%, 0.6);
+}
+
+.modal-ui-actions {
+	display: flex;
+	gap: 0.6rem;
+}
+
+.modal-ui-actions .btn-confirm {
+	flex: 1;
+}
+
+.modal-ui-actions .btn-cancel {
+	flex: 1;
+	background: hsla(0, 0%, 100%, 0.06);
+	border: solid 2px hsla(0, 0%, 100%, 0.1);
+	border-radius: 16px;
+	color: white;
+	font-size: 1.2rem;
+	padding: 0.8rem;
+	cursor: pointer;
+}
+
+.modal-ui-actions .btn-delete-confirm {
+	flex: 1;
+	padding: 0.8rem;
+	background: hsla(0, 70%, 45%, 0.2);
+	border: 1px solid var(--alert);
+	color: var(--alert);
+	border-radius: 16px;
+	font-weight: 600;
+	font-size: 1.2rem;
+	cursor: pointer;
 }

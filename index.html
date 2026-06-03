@@ -253,7 +253,7 @@
 				<div class="settings-card">
 					<h3 class="card-header-actions">Inventario</h3>
 					<div class="form-group">
-						<label>Umbral de Stock Crítico</label>
+						<label>Inventario Mínimo</label>
 						<input
 							type="number"
 							id="setting-stock-threshold"
@@ -262,6 +262,7 @@
 							onchange="updateThreshold(this.value)"
 						/>
 						<p class="setting-help">
+							Puede editar el límite de un producto específico en el inventario.
 							Los productos con esta cantidad o menos se marcarán como:
 						</p>
 						<p class="stock-badge low">● Bajo inventario</p>
@@ -348,7 +349,7 @@
 						/>
 					</div>
 
-					<span class="version-badge">v1.9.2</span>
+					<span class="version-badge">v1.10.0</span>
 
 					<div class="legal-links">
 						<a href="https://cesarsullen.github.io/links" target="_blank"
@@ -589,15 +590,28 @@
 							<strong id="edit-avg-cost" class="avg-cost">0</strong></label
 						>
 					</div>
-					<div class="form-group">
-						<label>Cantidad Actual</label>
-						<input
-							type="number"
-							id="edit-product-stock"
-							class="form-input"
-							min="0"
-							required
-						/>
+					<div class="form-row">
+						<div class="form-group">
+							<label>Cantidad Actual</label>
+							<input
+								type="number"
+								id="edit-product-stock"
+								class="form-input"
+								min="0"
+								required
+							/>
+						</div>
+						<div class="form-group">
+							<label>Inventario mínimo</label>
+							<input
+								type="number"
+								id="edit-product-threshold"
+								class="form-input"
+								min="0"
+								placeholder="Defecto: 5"
+								step="1"
+							/>
+						</div>
 					</div>
 
 					<div class="modal-actions">
@@ -721,6 +735,22 @@
 				>
 					¿No tienes cuenta? Click aquí.
 				</a>
+			</div>
+		</div>
+
+		<div id="toast-container"></div>
+
+		<div id="modal-ui">
+			<div class="modal-ui-box">
+				<p class="modal-ui-message" id="modal-ui-message"></p>
+				<input
+					type="text"
+					id="modal-ui-input"
+					class="modal-ui-input"
+					style="display: none"
+					autocomplete="off"
+				/>
+				<div class="modal-ui-actions" id="modal-ui-actions"></div>
 			</div>
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
