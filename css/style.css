@@ -898,6 +898,7 @@ input[list]::-webkit-calendar-picker-indicator {
 .timeline-main {
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
 	margin-bottom: 0.2rem;
 }
 
@@ -941,8 +942,17 @@ input[list]::-webkit-calendar-picker-indicator {
 	font-weight: 600;
 }
 
-.timeline-main {
-	align-items: center;
+.timeline-amount.type-return {
+	color: var(--alert);
+}
+
+.timeline-item.returned {
+	opacity: 0.8;
+}
+
+.timeline-returned-badge {
+	width: 12px;
+	height: auto;
 }
 
 .stats-filters {
@@ -1277,12 +1287,37 @@ input[list]::-webkit-calendar-picker-indicator {
 	transform: translateX(22px);
 }
 
-.cloud-link-code {
+.link-code-field {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: hsla(0, 0%, 0%, 0.6);
+	border: 1px solid hsla(0, 0%, 100%, 0.1);
+	border-radius: 12px;
+	padding: 0.6rem 0.8rem;
+	cursor: pointer;
+	max-width: fit-content;
+	justify-self: center;
+	gap: 0.5rem;
+	margin-block: 0.8rem;
+}
+
+.link-code-field:active {
+	background: hsla(0, 0%, 100%, 0.1);
+}
+
+.link-code-value {
 	font-size: 1.4rem;
 	font-weight: 700;
-	letter-spacing: 2px;
+	letter-spacing: 3px;
 	color: var(--accent);
-	margin: 0.5rem 0;
+}
+
+.link-code-copy-icon {
+	width: 20px;
+	height: 20px;
+	opacity: 0.5;
+	flex-shrink: 0;
 }
 
 .load-all-btn {
@@ -1320,6 +1355,7 @@ input[list]::-webkit-calendar-picker-indicator {
 .toast {
 	background: hsla(0, 0%, 18%, 0.97);
 	border: 1px solid hsla(0, 0%, 100%, 0.1);
+	backdrop-filter: blur(8px);
 	border-radius: 12px;
 	padding: 0.65rem 1.2rem;
 	font-size: 0.88rem;

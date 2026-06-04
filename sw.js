@@ -1,4 +1,4 @@
-const CACHE_NAME = "stox-v1.10.0";
+const CACHE_NAME = "stox-v2.0.0";
 const STATIC_ASSETS = [
 	// Page
 	"./",
@@ -15,10 +15,12 @@ const STATIC_ASSETS = [
 	// UI Icons
 	"./assets/icons/arrow-circle-down.svg",
 	"./assets/icons/arrow-circle-up.svg",
+	"./assets/icons/arrow-counter-clockwise.svg",
 	"./assets/icons/calendar-check-duotone.svg",
 	"./assets/icons/chart-line-up-duotone.svg",
 	"./assets/icons/chart-pie-slice.svg",
 	"./assets/icons/check-circle-fill.svg",
+	"./assets/icons/copy-simple-bold.svg",
 	"./assets/icons/export.svg",
 	"./assets/icons/file-arrow-down.svg",
 	"./assets/icons/file-arrow-up.svg",
@@ -70,42 +72,6 @@ self.addEventListener("activate", (event) => {
 
 // Fetch (cache-first)
 self.addEventListener("fetch", (event) => {
-	if (
-		event.request.method === "POST" &&
-		event.request.url.includes("index.html")
-	) {
-		event.respondWith(
-			(async () => {
-				try {
-					const formData = await event.request.formData();
-					const file = formData.get("shared_file");
-
-					if (file) {
-						const db = await new Promise((resolve, reject) => {
-							const request = indexedDB.open("SelyTempDB", 1);
-							request.onupgradeneeded = () =>
-								request.result.createObjectStore("files");
-							request.onsuccess = () => resolve(request.result);
-							request.onerror = () => reject(request.error);
-						});
-
-						await new Promise((resolve, reject) => {
-							const tx = db.transaction("files", "readwrite");
-							tx.objectStore("files").put(file, "last_shared_file");
-							tx.oncomplete = () => resolve();
-							tx.onerror = () => reject(tx.error);
-						});
-					}
-				} catch (err) {
-					console.error("Error procesando shared_file:", err);
-				}
-
-				return Response.redirect("./index.html?shared=true", 303);
-			})(),
-		);
-		return;
-	}
-
 	event.respondWith(
 		caches.match(event.request).then((response) => {
 			return response || fetch(event.request);
