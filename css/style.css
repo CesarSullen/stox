@@ -1,20 +1,20 @@
 @font-face {
-	font-family: "Poppins";
-	src: url("../typography/Poppins-Regular.ttf") format("truetype");
+	font-family: "Outfit";
+	src: url("../typography/Outfit-Regular.ttf") format("truetype");
 	font-weight: normal;
 	font-style: normal;
 }
 
 @font-face {
-	font-family: "Poppins";
-	src: url("../typography/Poppins-SemiBold.ttf") format("truetype");
+	font-family: "Outfit";
+	src: url("../typography/Outfit-SemiBold.ttf") format("truetype");
 	font-weight: 500;
 	font-style: normal;
 }
 
 @font-face {
-	font-family: "Poppins";
-	src: url("../typography/Poppins-Bold.ttf") format("truetype");
+	font-family: "Outfit";
+	src: url("../typography/Outfit-Bold.ttf") format("truetype");
 	font-weight: 600;
 	font-style: normal;
 }
@@ -23,8 +23,7 @@
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
-	/* transition: all 0.2s ease; */
-	font-family: "Poppins", sans-serif;
+	font-family: "Outfit", sans-serif;
 	-webkit-tap-highlight-color: transparent;
 	scrollbar-width: none;
 }
@@ -72,6 +71,7 @@ button,
 .filter-pill,
 .pos-pill,
 .modal,
+.modal-ui,
 .form-input,
 .primary-btn,
 .btn-confirm,
@@ -208,6 +208,49 @@ img {
 	color: var(--accent);
 }
 
+.daily-section-title {
+	font-size: 0.8rem;
+	font-weight: 600;
+	letter-spacing: 0.8px;
+	text-transform: uppercase;
+	margin-bottom: 0.6rem;
+}
+
+.daily-return-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.55rem 0;
+	border-bottom: 1px solid hsla(0, 0%, 100%, 0.05);
+	font-size: 0.88rem;
+	opacity: 0.85;
+}
+
+.daily-return-item:last-child {
+	border-bottom: none;
+}
+
+.daily-return-item strong {
+	color: var(--alert);
+}
+
+.daily-supply-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.55rem 0;
+	border-bottom: 1px solid hsla(0, 0%, 100%, 0.05);
+	font-size: 0.88rem;
+}
+
+.daily-supply-item:last-child {
+	border-bottom: none;
+}
+
+.daily-supply-item strong {
+	color: var(--alert);
+}
+
 .daily-summary-select option {
 	background: #1a1a1a;
 	color: white;
@@ -272,7 +315,7 @@ img {
 	background: hsla(0, 0%, 0%, 0.5);
 	backdrop-filter: blur(15px);
 	border: 1px solid rgba(255, 255, 255, 0.08);
-	border-radius: 500px;
+	border-radius: 50px;
 	z-index: 1000;
 }
 
@@ -809,7 +852,6 @@ input[list]::-webkit-calendar-picker-indicator {
 	padding: 0.6rem 1.2rem;
 	cursor: pointer;
 	font-size: 0.9rem;
-	color: var(--text-muted);
 	backdrop-filter: blur(15px);
 	background: hsla(0, 0%, 20%, 0.5);
 	border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1339,7 +1381,6 @@ input[list]::-webkit-calendar-picker-indicator {
 .link-code-copy-icon {
 	width: 20px;
 	height: 20px;
-	opacity: 0.5;
 	flex-shrink: 0;
 }
 
@@ -1407,7 +1448,7 @@ input[list]::-webkit-calendar-picker-indicator {
 	border-color: var(--alert);
 }
 
-#modal-ui {
+.modal-ui {
 	opacity: 0;
 	pointer-events: none;
 	position: fixed;
@@ -1421,7 +1462,7 @@ input[list]::-webkit-calendar-picker-indicator {
 	backdrop-filter: blur(8px);
 }
 
-#modal-ui.active {
+.modal-ui.active {
 	opacity: 1;
 	pointer-events: all;
 }

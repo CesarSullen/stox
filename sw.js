@@ -1,4 +1,4 @@
-const CACHE_NAME = "stox-v2.1.1";
+const CACHE_NAME = "stox-v2.1.2";
 const STATIC_ASSETS = [
 	// Page
 	"./",
@@ -40,9 +40,9 @@ const STATIC_ASSETS = [
 	"./assets/icons/x-circle.svg",
 
 	// Typography
-	"./typography/Poppins-Regular.ttf",
-	"./typography/Poppins-Bold.ttf",
-	"./typography/Poppins-SemiBold.ttf",
+	"./typography/Outfit-Regular.ttf",
+	"./typography/Outfit-Bold.ttf",
+	"./typography/Outfit-SemiBold.ttf",
 ];
 
 // Install
