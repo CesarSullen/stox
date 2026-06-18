@@ -35,6 +35,7 @@
 
 :root {
 	--accent: #4ade80;
+	--sely-accent: #a667e4;
 	--alert: #ff4d4d;
 	--text-muted: #808080;
 }
@@ -602,14 +603,13 @@ input[list]::-webkit-calendar-picker-indicator {
 }
 
 .ticket-section {
-	margin-block: 1rem;
+	margin-bottom: 1rem;
 }
 
 .ticket-list {
 	max-height: 0px;
 	overflow-y: auto;
 	background: hsla(0, 0%, 0%, 0.6);
-	padding: 10px;
 	border-radius: 8px;
 	margin-bottom: 0px;
 	opacity: 0;
@@ -617,7 +617,8 @@ input[list]::-webkit-calendar-picker-indicator {
 
 .ticket-list.active {
 	opacity: 1;
-	max-height: 150px;
+	max-height: 100px;
+	padding: 10px;
 	margin-bottom: 15px;
 }
 
@@ -935,6 +936,9 @@ input[list]::-webkit-calendar-picker-indicator {
 }
 .stock-badge.out {
 	color: var(--alert);
+}
+.stock-badge.service {
+	color: var(--sely-accent);
 }
 
 .no-results {
