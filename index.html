@@ -274,27 +274,25 @@
 
 				<div class="settings-card">
 					<h3 class="card-header-actions">Inventario</h3>
-					<div class="form-row">
-						<div class="form-group">
-							<label>Inventario Mínimo</label>
-							<input
-								type="number"
-								id="setting-stock-threshold"
-								class="form-input"
-								value="5"
-								onchange="updateThreshold(this.value)"
-							/>
-						</div>
-						<div class="form-group">
-							<label>Unidad de Servicio</label>
-							<input
-								type="text"
-								id="setting-service-unit"
-								class="form-input"
-								placeholder="Ej: sesión, hora"
-								onchange="updateServiceUnit(this.value)"
-							/>
-						</div>
+					<div class="form-group">
+						<label>Inventario Mínimo</label>
+						<input
+							type="number"
+							id="setting-stock-threshold"
+							class="form-input"
+							value="5"
+							onchange="updateThreshold(this.value)"
+						/>
+					</div>
+					<div class="form-group">
+						<label>Unidad de Servicio</label>
+						<input
+							type="text"
+							id="setting-service-unit"
+							class="form-input"
+							placeholder="Ej: sesión, hora"
+							onchange="updateServiceUnit(this.value)"
+						/>
 					</div>
 					<p class="setting-help">
 						Los productos físicos con cantidad límite o menor se marcarán como:
@@ -326,8 +324,8 @@
 						</label>
 					</div>
 					<p>
-						Guarde una copia de seguridad de sus datos y sincronice las ventas
-						con sus dependientes.
+						Inicia sesión para guardar tu inventario en la nube y acceder a
+						funciones premium.
 					</p>
 					<div id="cloud-info"></div>
 				</div>
@@ -384,7 +382,7 @@
 						</a>
 					</div>
 
-					<span class="version-badge">v3.0.0</span>
+					<span class="version-badge">v3.1.0</span>
 
 					<div class="icon-links">
 						<a href="https://t.me/stxapp" target="_blank">
@@ -790,101 +788,114 @@
 				</div>
 
 				<ul class="premium-features">
-					<li>Ventas múltiples</li>
-					<li>Acceso al historial</li>
 					<li>Inventario ilimitado</li>
+					<li>Ventas múltiples</li>
+					<li>Historial</li>
 					<li>Exportación de datos</li>
-					<li>Estadísticas detalladas</li>
-					<li>App para dependientes</li>
-					<li>Acceso a la nube</li>
+					<li>Estadísticas</li>
+					<li>Modo dependientes</li>
 				</ul>
 
-				<div class="pricing-container">
-					<div class="pricing-options">
-						<div class="price-item">
-							<span>Premium:</span> <strong>5000 CUP/año</strong>
-						</div>
-						<div class="price-item">
-							<span>Nube (opcional):</span> <strong>500 CUP/mes</strong>
-						</div>
+				<div class="auth-tabs">
+					<button
+						id="tab-login"
+						class="auth-tab active"
+						onclick="switchAuthTab('login')"
+					>
+						Iniciar sesión
+					</button>
+					<button
+						id="tab-register"
+						class="auth-tab"
+						onclick="switchAuthTab('register')"
+					>
+						Crear cuenta
+					</button>
+				</div>
+
+				<!-- Login -->
+				<div id="auth-login-form">
+					<div class="form-group">
+						<label>Correo electrónico</label>
+						<input
+							type="email"
+							id="login-email"
+							class="form-input"
+							placeholder="tu@correo.com"
+							autocomplete="email"
+						/>
+					</div>
+					<div class="form-group">
+						<label>Contraseña</label>
+						<input
+							type="password"
+							id="login-password"
+							class="form-input"
+							placeholder="••••••••"
+							autocomplete="current-password"
+						/>
+					</div>
+					<div class="modal-actions">
+						<button type="button" class="btn-confirm" onclick="submitLogin()">
+							Entrar
+						</button>
+					</div>
+					<p style="margin-block: 5px">
+						Con una
+						<span style="color: var(--accent)">cuenta gratuita</span>
+						sincronizas tu inventario en la nube.<br />
+						Para acceder a funciones premium,
+						<a
+							href="https://wa.me/5351643954?text=Hola%2C%20quiero%20activar%20Premium%20en%20STOX."
+							target="_blank"
+							class="contact-link"
+							>CONTÁCTAME AQUÍ</a
+						>
+					</p>
+				</div>
+
+				<!-- Registro -->
+				<div id="auth-register-form" style="display: none">
+					<div class="form-group">
+						<label>Correo electrónico</label>
+						<input
+							type="email"
+							id="register-email"
+							class="form-input"
+							placeholder="tu@correo.com"
+							autocomplete="email"
+						/>
+					</div>
+					<div class="form-group">
+						<label>Contraseña</label>
+						<input
+							type="password"
+							id="register-password"
+							class="form-input"
+							placeholder="Mínimo 8 caracteres"
+							autocomplete="new-password"
+						/>
+					</div>
+					<div class="form-group">
+						<label>Confirmar contraseña</label>
+						<input
+							type="password"
+							id="register-password-confirm"
+							class="form-input"
+							placeholder="Repite la contraseña"
+							autocomplete="new-password"
+						/>
+					</div>
+					<div class="modal-actions">
+						<button
+							type="button"
+							class="btn-confirm"
+							onclick="submitRegister()"
+						>
+							Crear cuenta
+						</button>
 					</div>
 				</div>
-
-				<div class="form-group">
-					<label>Introduce tu código</label>
-					<input
-						type="text"
-						id="premium-code"
-						class="form-input premium-code"
-						placeholder="XXXX-XXXX-XXXX-XXXX"
-						autocomplete="off"
-					/>
-				</div>
-
-				<button class="btn-confirm" onclick="validatePremiumCode()">
-					Activar Premium
-				</button>
-
-				<a
-					href="https://wa.me/5351643954?text=Hola, quiero obtener un código Premium para STOX."
-					target="_blank"
-					class="contact-link"
-				>
-					¿No tienes código? Click aquí.
-				</a>
-			</div>
-		</div>
-
-		<div id="modal-cloud-login" class="modal">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h2>Acceso a la Nube</h2>
-					<button
-						class="modal-header-btn"
-						onclick="
-							closeModal('modal-cloud-login');
-							document.getElementById('cloud-toggle').checked = false;
-						"
-					>
-						<img src="./assets/icons/x-circle.svg" />
-					</button>
-				</div>
-				<div class="form-group">
-					<label>Usuario</label>
-					<input
-						type="text"
-						id="cloud-username"
-						class="form-input"
-						placeholder="Nombre de tu negocio"
-						autocomplete="off"
-					/>
-				</div>
-				<div class="form-group">
-					<label>Contraseña</label>
-					<input
-						type="password"
-						id="cloud-password"
-						class="form-input"
-						placeholder="••••••••"
-						autocomplete="off"
-					/>
-				</div>
-				<div class="modal-actions">
-					<button
-						type="button"
-						class="btn-confirm"
-						onclick="submitCloudLogin()"
-					>
-						Conectar
-					</button>
-				</div>
-				<a
-					href="https://wa.me/5351643954?text=Hola, quiero contratar la sincronización en la nube para STOX."
-					target="_blank"
-					class="contact-link"
-				>
-					¿No tienes cuenta? Click aquí.
-				</a>
 			</div>
 		</div>
 
