@@ -486,6 +486,12 @@ img {
 	max-width: 400px;
 	background: hsla(0, 0%, 20%, 0.5);
 	border: 1px solid rgba(255, 255, 255, 0.08);
+	max-height: 90dvh;
+	overflow-y: auto;
+	scrollbar-width: none;
+}
+.modal-content::-webkit-scrollbar {
+	display: none;
 }
 @media (min-width: 768px) {
 	.modal-content {
@@ -547,6 +553,12 @@ input[type="number"] {
 
 input[list]::-webkit-calendar-picker-indicator {
 	display: none !important;
+}
+
+.sale-description-input {
+	field-sizing: content;
+	resize: none;
+	max-height: 100px;
 }
 
 .modal-actions {
@@ -628,6 +640,8 @@ input[list]::-webkit-calendar-picker-indicator {
 	align-items: center;
 	border-bottom: 1px solid var(--text-muted);
 	white-space: nowrap;
+	padding: 4px 0;
+	gap: 0.5rem;
 }
 
 .ticket-item:last-child {
@@ -635,9 +649,11 @@ input[list]::-webkit-calendar-picker-indicator {
 }
 
 .ticket-item-info {
+	min-width: 0;
 	max-width: 70%;
+	white-space: normal;
+	word-break: break-word;
 	overflow: hidden;
-	text-overflow: ellipsis;
 }
 
 .ticket-total {
