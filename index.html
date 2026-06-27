@@ -382,7 +382,7 @@
 						</a>
 					</div>
 
-					<span class="version-badge">v3.2.0</span>
+					<span class="version-badge">v3.2.1</span>
 
 					<div class="icon-links">
 						<a href="https://t.me/stxapp" target="_blank">
@@ -427,6 +427,24 @@
 				</div>
 
 				<div id="sale-input-section">
+					<div
+						id="sale-services-filter-row"
+						style="
+							display: none;
+							justify-content: space-between;
+							align-items: center;
+						"
+					>
+						<label>Solo servicios</label>
+						<label class="toggle-switch">
+							<input
+								type="checkbox"
+								id="sale-services-only-toggle"
+								onchange="onSaleServicesToggle(this.checked)"
+							/>
+							<span class="toggle-slider"></span>
+						</label>
+					</div>
 					<div class="form-group">
 						<label>Producto o servicio</label>
 						<select id="sale-product-select" class="form-input"></select>
