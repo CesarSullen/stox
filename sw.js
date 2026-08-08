@@ -1,4 +1,4 @@
-const CACHE_NAME = "stox-v3.2.1";
+const CACHE_NAME = "stox-v4.0.0";
 const STATIC_ASSETS = [
 	// Page
 	"./",
@@ -6,7 +6,6 @@ const STATIC_ASSETS = [
 	"./css/style.css",
 	"./js/main.js",
 	"./js/pdf.js",
-	"./js/supabase-config.js",
 	"./manifest.json",
 
 	// App Icons
