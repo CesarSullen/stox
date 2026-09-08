@@ -382,7 +382,7 @@
 						</a>
 					</div>
 
-					<span class="version-badge">v4.0.1</span>
+					<span class="version-badge">v4.1.0</span>
 
 					<div class="icon-links">
 						<a href="https://t.me/stxapp" target="_blank">
@@ -559,7 +559,6 @@
 							class="form-input"
 							list="product-list"
 							placeholder="Ej: Spaguetti Ovella 500gr"
-							required
 						/>
 						<datalist id="product-list"></datalist>
 					</div>
@@ -602,7 +601,7 @@
 								/>
 							</div>
 							<div class="form-group">
-								<label>Transport. (u)</label>
+								<label id="supply-transport-label">Transp. (Unidad)</label>
 								<input
 									type="number"
 									id="supply-transport"
@@ -612,6 +611,19 @@
 									oninput="updateSuggestedPrice()"
 								/>
 							</div>
+						</div>
+						<div class="form-group">
+							<button
+								type="button"
+								id="btn-add-supply-to-ticket"
+								class="btn-ghost"
+								onclick="addToSupplyTicket()"
+							>
+								Añadir al lote
+							</button>
+						</div>
+						<div class="ticket-section">
+							<div id="supply-ticket-items-container" class="ticket-list"></div>
 						</div>
 					</div>
 
