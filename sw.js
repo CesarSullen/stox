@@ -1,4 +1,4 @@
-const CACHE_NAME = "stox-v4.1.1";
+const CACHE_NAME = "stox-v4.1.2";
 const STATIC_ASSETS = [
   // Page
   "./",
@@ -6,6 +6,9 @@ const STATIC_ASSETS = [
   "./css/style.css",
   "./js/main.js",
   "./js/pdf.js",
+  "./js/crypto-js.min.js",
+  "./js/jspdf.umd.min.js",
+  "./js/jspdf.plugin.autotable.min.js",
   "./manifest.json",
 
   // App Icons
