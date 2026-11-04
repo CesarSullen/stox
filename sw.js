@@ -1,4 +1,4 @@
-const CACHE_NAME = "stox-v4.1.3";
+const CACHE_NAME = "stox-v4.1.4";
 const STATIC_ASSETS = [
   // Page
   "./",
@@ -25,7 +25,6 @@ const STATIC_ASSETS = [
   "./assets/icons/chart-pie-slice.svg",
   "./assets/icons/check-circle-fill.svg",
   "./assets/icons/copy-simple-bold.svg",
-  "./assets/icons/export.svg",
   "./assets/icons/file-arrow-down.svg",
   "./assets/icons/file-arrow-up.svg",
   "./assets/icons/gear-six.svg",
