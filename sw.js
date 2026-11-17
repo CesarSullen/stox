@@ -1,4 +1,4 @@
-const CACHE_NAME = "stox-v4.1.5";
+const CACHE_NAME = "stox-v4.2.0";
 const STATIC_ASSETS = [
   // Page
   "./",
@@ -10,6 +10,9 @@ const STATIC_ASSETS = [
   "./js/jspdf.umd.min.js",
   "./js/jspdf.plugin.autotable.min.js",
   "./manifest.json",
+  "./assets/opengraph/icon-192.png",
+  "./assets/opengraph/icon-512.png",
+  "./assets/opengraph/icon-512-maskable.png",
 
   // App Icons
   "./assets/opengraph/logo.png",
@@ -81,7 +84,7 @@ self.addEventListener("fetch", (event) => {
 
   if (
     event.request.method !== "GET" ||
-    url.hostname.includes("deno.net") ||
+    url.hostname.includes("onrender.com") ||
     !url.origin.includes(self.location.origin)
   ) {
     return;
